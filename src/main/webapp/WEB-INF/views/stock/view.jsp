@@ -22,7 +22,8 @@
 				<th>Company Name</th>
 <!-- 				<th>Series</th> -->
 				<th>Alert Price</th>
-				<th>Target Price</th>
+<!-- 				<th>Target Price</th> -->
+				<th>Alert Difference (%)</th>
 				<th>Live Price</th>
 				<th>Added Date</th>
 				<th>Last Updated Date</th>
@@ -45,7 +46,10 @@
 						<td>${alerts.stock.companyName}</td>
 <%-- 						<td>${stock.series}</td> --%>
 						<td>${alerts.alertPrice}</td>
-						<td>${alerts.targetPrice}</td>
+<%-- 						<td>${alerts.targetPrice}</td> --%>
+						<td>
+							<c:if test="${alerts.alertDiff != null}">${alerts.alertDiff} %</c:if> 
+						</td>
 						<td>${alerts.stock.lastPrice}</td>
 						<td>${alerts.createdDate}</td>
 						<td>${alerts.updatedDate}</td>

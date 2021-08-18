@@ -21,7 +21,7 @@ import com.stock.demo.entities.StockAlerts;
 import com.stock.demo.entities.Users;
 import com.stock.demo.service.StockAlertService;
 import com.stock.demo.service.UserService;
-import com.stock.demo.utilities.url.StockConstants;
+import com.stock.demo.utilities.StockConstants;
 
 @Controller
 @SessionAttributes("user")

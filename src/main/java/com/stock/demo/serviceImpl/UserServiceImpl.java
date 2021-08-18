@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.stock.demo.entities.Users;
+import com.stock.demo.exception.UserNotFoundException;
 import com.stock.demo.repo.UserRepository;
 import com.stock.demo.service.UserService;
 
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Users findById(Long id) {
-		return userRepo.findById(id).orElseThrow();
+		return userRepo.findById(id).orElseThrow(() -> new UserNotFoundException(""+id));
 	}
 
 	@Override

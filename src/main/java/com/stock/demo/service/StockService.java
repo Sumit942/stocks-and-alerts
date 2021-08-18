@@ -21,7 +21,7 @@ public interface StockService{
 	
 	void deleteBySymbol(String symbol);
 	
-	void deleteById(Integer id);
+	void deleteById(Long id);
 
-	Stock findById(Integer id);
+	Stock findById(Long id);
 }

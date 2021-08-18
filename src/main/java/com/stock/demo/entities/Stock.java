@@ -2,12 +2,16 @@ package com.stock.demo.entities;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
@@ -42,5 +46,15 @@ public class Stock {
 	
 	@UpdateTimestamp
 	private Date updatedDate;
+	
+	@OneToMany(mappedBy = "stock",fetch = FetchType.EAGER,
+			cascade = {CascadeType.ALL})
+	private List<StockAlerts> alerts;
+
+	@Override
+	public String toString() {
+		return "Stock [id=" + id + ", symbol=" + symbol + ", companyName=" + companyName + ", series=" + series
+				+ ", lastPrice=" + lastPrice + ", createdDate=" + createdDate + ", updatedDate=" + updatedDate + "]";
+	}
 	
 }

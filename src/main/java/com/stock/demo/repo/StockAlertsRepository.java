@@ -9,4 +9,6 @@ import com.stock.demo.entities.StockAlerts;
 public interface StockAlertsRepository extends JpaRepository<StockAlerts, Long> {
 
 	List<StockAlerts> findByUserId(Long id);
+	
+	List<StockAlerts> findByStockId(Long id);
 }

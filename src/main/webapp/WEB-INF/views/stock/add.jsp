@@ -4,7 +4,7 @@
 <div class="container">
 	<form:form action="add" method="post" modelAttribute="StockAlerts">
 		<form:hidden path="id" />
-		<form:hidden path="user.id" />
+		<form:hidden path="user.id" value="${user.id}"/>
 		<form:hidden path="stock.id" />
 		<div class="row mb-3">
 			<fieldset class="form-group col-md-6">

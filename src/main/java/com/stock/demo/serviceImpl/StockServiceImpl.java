@@ -58,7 +58,7 @@ public class StockServiceImpl implements StockService {
 	}
 
 	@Override
-	public void deleteById(Integer id) {
+	public void deleteById(Long id) {
 		try {
 			stockRepo.deleteById(id);
 		} catch (Exception e) {
@@ -66,9 +66,8 @@ public class StockServiceImpl implements StockService {
 		}
 	}
 
-
 	@Override
-	public Stock findById(Integer id) {
+	public Stock findById(Long id) {
 		return stockRepo.findById(id).orElseThrow(() -> new StockNotFoundException(String.valueOf(id)));
 	}
 

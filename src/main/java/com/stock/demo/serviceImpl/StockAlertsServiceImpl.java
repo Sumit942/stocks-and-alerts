@@ -1,6 +1,8 @@
 package com.stock.demo.serviceImpl;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,7 @@ import com.stock.demo.exception.StockAlertNotFoundException;
 import com.stock.demo.repo.StockAlertsRepository;
 import com.stock.demo.service.StockAlertService;
 import com.stock.demo.service.StockService;
+import com.stock.demo.utilities.converter.StockInfoConverter;
 
 @Service
 public class StockAlertsServiceImpl implements StockAlertService {
@@ -21,37 +24,78 @@ public class StockAlertsServiceImpl implements StockAlertService {
 
 	@Autowired
 	StockAlertsRepository alertRepo;
-	
+
 	@Autowired
 	StockService stockService;
 
 	@Override
 	public StockAlerts save(StockAlerts alerts) {
 		try {
-			if( alerts.getStock().getId() == null) {
+			if (alerts.getStock().getId() == null) {
 				Stock stock = stockService.findBySymbol(alerts.getStock().getSymbol());
 				if (stock == null) {
 					stock = stockService.save(alerts.getStock());
-					alerts.setStock(stock);
 				}
+				alerts.setStock(stock);
 			}
+			preSave(alerts);
 			return alertRepo.save(alerts);
 		} catch (Exception e) {
-			LOG.error("Error saving StockAlerts of symbol" + alerts.getStock().getSymbol(), e);
+			LOG.error("Error saving StockAlerts of symbol - " + alerts.getStock().getSymbol(), e);
 		}
 		return null;
 	}
 
+	/**
+	 * Do some pre-save operations like setting the alert difference percentage.
+	 * 
+	 * @param alert
+	 */
+	public void preSave(StockAlerts alert) {
+		if (alert == null) {
+			return;
+		}
+		BigDecimal lastPrice, alertPrice, diffPerc;
+
+		lastPrice = alert.getStock() != null ? alert.getStock().getLastPrice() : null;
+		alertPrice = alert.getAlertPrice();
+		diffPerc = StockInfoConverter.getAlertDiff(lastPrice, alertPrice);
+
+		alert.setAlertDiff(diffPerc);
+	}
+
 	@Override
 	public void deleteById(Long id) {
-		alertRepo.deleteById(id);
+		Optional<StockAlerts> findById = alertRepo.findById(id);
+		if (findById.isPresent()) {
+			Long stockId = findById.get().getStock().getId();
+			alertRepo.deleteById(id);
+			postDelete(stockId);
+		}
+	}
+
+	/**
+	 * Deleting Stock itself if there is no more StockAlerts added for this stock by
+	 * any Users
+	 * 
+	 * @param id
+	 */
+	public void postDelete(Long stockId) {
+
+		List<StockAlerts> findByStock = alertRepo.findByStockId(stockId);
+		if (findByStock == null || findByStock.isEmpty()) {
+			Stock stock = stockService.findById(stockId);
+			stock.setAlerts(null);
+			stock = stockService.save(stock);
+			stockService.deleteById(stockId);
+		}
 	}
 
 	@Override
 	public List<StockAlerts> findByUserId(Long id) {
 		return alertRepo.findByUserId(id);
 	}
-	
+
 	@Override
 	public List<StockAlerts> findAll() {
 		return alertRepo.findAll();

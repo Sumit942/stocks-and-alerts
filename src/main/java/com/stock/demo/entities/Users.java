@@ -31,6 +31,8 @@ public class Users {
 	
 	private String lastName;
 	
+	private String emailId;
+	
 	@CreationTimestamp
 	private Date createdDate;
 	

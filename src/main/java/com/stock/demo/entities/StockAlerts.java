@@ -15,8 +15,6 @@ import javax.validation.constraints.Min;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.stock.demo.utilities.converter.StockInfoConverter;
-
 import lombok.Data;
 
 @Entity
@@ -53,8 +51,4 @@ public class StockAlerts {
 	@UpdateTimestamp
 	private Date updatedDate;
 	
-	public void setAlertPrice(BigDecimal alertPrice) {
-		this.alertPrice = alertPrice;
-		this.alertDiff = StockInfoConverter.getAlertDiff(this.stock != null ? this.stock.getLastPrice() : null, alertPrice);
-	}
 }
