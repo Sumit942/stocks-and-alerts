@@ -47,8 +47,7 @@ public class Stock {
 	@UpdateTimestamp
 	private Date updatedDate;
 	
-	@OneToMany(mappedBy = "stock",fetch = FetchType.EAGER,
-			cascade = {CascadeType.ALL})
+	@OneToMany(mappedBy = "stock")
 	private List<StockAlerts> alerts;
 
 	@Override
