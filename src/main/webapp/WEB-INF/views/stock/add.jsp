@@ -2,6 +2,7 @@
 <%@ include file="../../common/navigation.jspf"%>
 <link rel="stylesheet" 
 	  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
 <div class="container">
 	<form:form action="add" method="post" modelAttribute="StockAlerts">
 		<form:hidden path="id" />
@@ -33,9 +34,6 @@
 					</div>
 				</div>
 			</fieldset>
-<!-- 			<fieldset class="form-group col-md-1"> -->
-<!-- 				<a class="btn"><i class="fa fa-refresh"></i></a> -->
-<!-- 			</fieldset> -->
 			<fieldset class="form-group col-md-4">
 				<form:label path="alertPrice" class="form-label">Alert Price</form:label>
 				<form:input path="alertPrice" class="form-control" />
@@ -63,6 +61,25 @@
 	</form:form>
 </div>
 <script type="text/javascript">
+
+	$(document).ready(function(){
+		
+		$("#StockAlerts").validate({
+			rules : {
+				"stock\\.symbol" : "required",
+				alertPrice : "required"
+			},
+			messages : {
+				"stock\\.symbol" : "Please Enter Symbol",
+				alertPrice : "Please Enter Alert Price"
+			},
+			submitHandler: function (form) {
+				form.submit();
+			}
+		})
+	});
+
+
 	$("#stock\\.symbol").autocomplete({
 		source : function(request, response) {
 			$.ajax({

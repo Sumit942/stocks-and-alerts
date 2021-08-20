@@ -10,9 +10,9 @@ public interface StockAlertsRepository extends JpaRepository<StockAlerts, Long> 
 
 	List<StockAlerts> findByUserId(Long id);
 	
-	List<StockAlerts> findByStockId(Long id);
+	List<StockAlerts> findByStockId(Long stockId);
 
-	List<StockAlerts> findByStockIdAndIsAlertEnabledAndIsMailSend(Long id, boolean isAlertEnabled,
+	List<StockAlerts> findByStockIdAndIsAlertEnabledAndIsMailSend(Long stockId, boolean isAlertEnabled,
 			boolean isMailSend);
 	
 }
