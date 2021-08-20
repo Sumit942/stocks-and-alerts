@@ -1,11 +1,14 @@
 package com.stock.demo.service;
 
-import com.stock.demo.entities.Stock;
+import java.util.List;
+
+import com.stock.demo.entities.StockAlerts;
 
 public interface MailService {
 
-	void triggerStockMails(Stock stock);
+	void sendAlertMails(List<StockAlerts> stock);
 	
 	void sendSimpleMail(String to,String message);
 	
+	boolean sendHtmlEmails(StockAlerts alert);
 }

@@ -25,7 +25,7 @@ public class JsoupOnlineDataService implements OnlineDataService {
 		Document htmlContent = null;
 
 		try {
-			System.out.println("getting live stock price from url- " + url);
+//			System.out.println("getting live stock price from url- " + url);
 			htmlContent = Jsoup.connect(url).get();
 		} catch (Exception e) {
 			e.printStackTrace();

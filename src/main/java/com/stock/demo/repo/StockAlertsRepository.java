@@ -11,4 +11,8 @@ public interface StockAlertsRepository extends JpaRepository<StockAlerts, Long> 
 	List<StockAlerts> findByUserId(Long id);
 	
 	List<StockAlerts> findByStockId(Long id);
+
+	List<StockAlerts> findByStockIdAndIsAlertEnabledAndIsMailSend(Long id, boolean isAlertEnabled,
+			boolean isMailSend);
+	
 }

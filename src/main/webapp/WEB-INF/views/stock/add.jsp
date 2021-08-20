@@ -1,6 +1,7 @@
 <%@ include file="../../common/header.jspf"%>
 <%@ include file="../../common/navigation.jspf"%>
-
+<link rel="stylesheet" 
+	  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <div class="container">
 	<form:form action="add" method="post" modelAttribute="StockAlerts">
 		<form:hidden path="id" />
@@ -21,11 +22,20 @@
 		</div>
 		<div class="row mb-3">
 			<fieldset class="form-group col-md-4">
-				<form:label path="stock.lastPrice" class="form-label">Last Price</form:label>
-				<form:input path="stock.lastPrice" class="form-control"
-					readonly="true" />
-				<form:errors path="stock.lastPrice" class="text-warning" />
+				<div class="row">
+					<div class="col-md-10">
+						<form:label path="stock.lastPrice" class="form-label">Last Price</form:label>
+						<form:input path="stock.lastPrice" class="form-control"	readonly="true" />
+						<form:errors path="stock.lastPrice" class="text-warning" />				
+					</div>
+					<div class="col-md-1" style="margin-left: -20px;margin-top: 2.2rem;">
+						<a onclick="javascript:getLastPrice();"><i id="refresh" class="fa fa-refresh" style="font-size: 30px;"></i></a>
+					</div>
+				</div>
 			</fieldset>
+<!-- 			<fieldset class="form-group col-md-1"> -->
+<!-- 				<a class="btn"><i class="fa fa-refresh"></i></a> -->
+<!-- 			</fieldset> -->
 			<fieldset class="form-group col-md-4">
 				<form:label path="alertPrice" class="form-label">Alert Price</form:label>
 				<form:input path="alertPrice" class="form-control" />
@@ -63,7 +73,7 @@
 				},
 				success : function(data) {
 					$('#stock\\.companyName').val('')
-					console.log(data);
+// 					console.log(data);
 					response(data);
 				},
 				error : function(err) {
@@ -85,6 +95,7 @@
 	};
 
 	function setLastPrice(symbol) {
+		$('#refresh').attr("class","fa fa-refresh fa-spin");
 		$.ajax({
 			url : '${pageContext.request.contextPath}/live/lastPrice',
 			datatype : 'json',
@@ -93,11 +104,22 @@
 			},
 			success : function(res) {
 				$('#stock\\.lastPrice').val(res)
+				$('#refresh').attr("class","fa fa-refresh")
 			},
 			error : function(err) {
 				console.log('error in getting live price --> ' + err)
+				$('#refresh').attr("class","fa fa-refresh")
 			}
 		})
+	}
+	
+	function getLastPrice(){
+		var symbol = $('#stock\\.symbol').val();
+		if (symbol && symbol.trim() != "") {
+			setLastPrice(symbol);
+		} else {
+			alert("Please Select Symbol")
+		}
 	}
 </script>
 <%@ include file="../../common/footer.jspf"%>

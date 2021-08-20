@@ -10,11 +10,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.stock.demo.entities.Stock;
+import com.stock.demo.entities.StockAlerts;
 import com.stock.demo.service.LiveStockService;
 import com.stock.demo.service.MailService;
 import com.stock.demo.service.StockAlertService;
 import com.stock.demo.service.StockService;
-import com.stock.demo.utilities.converter.StockInfoConverter;
 
 @Component
 public class PriceUpdateSchedular {
@@ -33,7 +33,7 @@ public class PriceUpdateSchedular {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PriceUpdateSchedular.class);
 	
-	@Scheduled(cron = "0 * * * * MON-FRI")
+	@Scheduled(cron = "0 * * * * *")
 	public void updatePrice() {
 		
 		LOG.info("Stock priceUpdater");
@@ -63,6 +63,7 @@ public class PriceUpdateSchedular {
 			String lastPriceStr = null;
 			BigDecimal savedLastPrice,lastPrice = null;
 			Stock updated = null;
+			List<StockAlerts> updatedAlerts = null;
 			
 			savedLastPrice = stock.getLastPrice();
 			lastPriceStr = liveStockService.getLastPrice(stock.getSymbol(), null);
@@ -72,18 +73,16 @@ public class PriceUpdateSchedular {
 				return;
 			}
 			
-			//updating lastPrice of stock
+			//updating and saving lastPrice of stock
 			stock.setLastPrice(lastPrice);
-			//updating alert difference percentage
-			stock.getAlerts().forEach(e -> {
-				BigDecimal diffPerc = StockInfoConverter.getAlertDiff(stock.getLastPrice(), e.getAlertPrice());
-				e.setAlertDiff(diffPerc);
-			});
 			updated = stockService.save(stock);
 			LOG.info("Updated:: "+updated.getSymbol()+"@"+updated.getLastPrice());
 			
-			//triggering mails
-			mailService.triggerStockMails(stock);
+			//updating alerts for stock
+			updatedAlerts = alertService.updateAlerts(stock);
+			
+			//calling Mail Sending Service
+			mailService.sendAlertMails(updatedAlerts);
 		}
 		
 	}

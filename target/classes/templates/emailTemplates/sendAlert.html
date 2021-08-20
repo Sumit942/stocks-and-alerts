@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Stock-Alert</title>
+</head>
+<body>
+<h2>Hi, <b th:text="${alert.user.firstName}"></b>  <b th:text="${alert.user.lastName}"></b></h2>
+
+<div>
+	Your Stock <b th:text="${alert.stock.companyName}"></b> (<b th:text="${alert.stock.symbol}"></b>) 
+	is Trading near Your Alert Price <b th:text="${alert.stock.lastPrice}"></b>. 
+	The difference of your Alert is	<b th:text="${alert.alertDiff}"> %</b>.<br><br>
+ </div>
+ 
+ <div>
+ <i>Regards,</i><br>
+ <strong>stock-and-alerts</strong>
+ </div>
+</body>
+</html>

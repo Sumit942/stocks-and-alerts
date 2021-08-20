@@ -111,4 +111,19 @@ public class StockAlertsServiceImpl implements StockAlertService {
 		return null;
 	}
 
+	@Override
+	public List<StockAlerts> updateAlerts(Stock stock) {
+		List<StockAlerts> alerts = alertRepo.findByStockId(stock.getId());
+		alertRepo.findByStockIdAndIsAlertEnabledAndIsMailSend(stock.getId(),true,false);
+		if(alerts != null) {
+			alerts.forEach((e) -> {
+				BigDecimal alertDiff = StockInfoConverter
+										.getAlertDiff(stock.getLastPrice(), e.getAlertPrice());
+				e.setAlertDiff(alertDiff);
+			});
+		}
+		//saving the alerts with updated alertDifferences
+		return alertRepo.saveAll(alerts);
+	}
+
 }
