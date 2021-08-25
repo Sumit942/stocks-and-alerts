@@ -1,7 +1,6 @@
 <%@ include file="../../common/header.jspf"%>
 <%@ include file="../../common/navigation.jspf"%>
 
-
 <div class="container-fluid">
 	<h2>Stocks Added by you</h2>
 	<c:if test="${not empty message}">
@@ -19,7 +18,7 @@
 			<tr>
 				<th>Sr. No</th>
 				<th>Symbol</th>
-				<th>Company Name</th>
+<!-- 				<th>Company Name</th> -->
 <!-- 				<th>Series</th> -->
 				<th>Alert Price</th>
 <!-- 				<th>Target Price</th> -->
@@ -42,11 +41,13 @@
 				<c:forEach items="${stockAlertList}" var="alerts" varStatus="counter">
 					<tr>
 						<td>${counter.count}</td>
-						<td>${alerts.stock.symbol}</td>
-						<td>${alerts.stock.companyName}</td>
+						<td><a data-bs-toggle="tooltip" data-bs-placement="top" title="${alerts.stock.companyName}">
+								${alerts.stock.symbol}
+							 </a>
+						</td>
+<%-- 						<td>${alerts.stock.companyName}</td> --%>
 <%-- 						<td>${stock.series}</td> --%>
 						<td>${alerts.alertPrice}</td>
-<%-- 						<td>${alerts.targetPrice}</td> --%>
 						<td>
 							<c:if test="${alerts.alertDiff != null}">${alerts.alertDiff} %</c:if> 
 						</td>
@@ -65,6 +66,11 @@
 	</table>
 </div>
 <script type="text/javascript">
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+
 $(document).ready(function() {
     $('#stockDatatable').DataTable();
 } );

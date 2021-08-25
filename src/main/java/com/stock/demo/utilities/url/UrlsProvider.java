@@ -24,4 +24,8 @@ public class UrlsProvider implements Urls {
 	public String getNSE1_COMPANY_FULL_HISTORICAL_DATA() {
 		return "urlProvider";
 	}
+	
+	public String getNSE_COMPANY_HISTORICAL_DATA(String symbol, String series, String from, String to) {
+		return "urlProvider";
+	}
 }

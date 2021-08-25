@@ -36,7 +36,7 @@ public class PriceUpdateSchedular {
 	@Scheduled(cron = "0 * * * * *")
 	public void updatePrice() {
 		
-		LOG.info("Stock priceUpdater");
+		LOG.info("\n-----Stock priceUpdater-----");
 		List<Stock> savedStocksList = stockService.findAll();
 		savedStocksList.forEach((stock) ->{
 			
@@ -67,6 +67,11 @@ public class PriceUpdateSchedular {
 			
 			savedLastPrice = stock.getLastPrice();
 			lastPriceStr = liveStockService.getLastPrice(stock.getSymbol(), null);
+			
+			if (lastPriceStr == null) {
+				return;
+			}
+			
 			lastPrice = new BigDecimal(lastPriceStr);
 			
 			if ( lastPrice.compareTo(savedLastPrice) == 0) {
@@ -83,6 +88,18 @@ public class PriceUpdateSchedular {
 			
 			//calling Mail Sending Service
 			mailService.sendAlertMails(updatedAlerts);
+		}
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private class StockAnalyzerThread implements Runnable {
+
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			
 		}
 		
 	}

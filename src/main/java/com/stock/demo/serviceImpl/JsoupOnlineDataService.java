@@ -10,15 +10,13 @@ import com.stock.demo.service.OnlineDataService;
 @Service
 public class JsoupOnlineDataService implements OnlineDataService {
 
-	public JsoupOnlineDataService() {
-		System.out.println("JsoupOnlineDataService.JsoupOnlineDataService()");
-	}
-
 	@Override
 	public String getHtmlDataFromUrl(String url) {
 		Document doc = getHTMLPage(url);
-
-		return doc.text();
+		if (doc != null)
+			return doc.text();
+		else 
+			return null;
 	}
 
 	private Document getHTMLPage(String url) {
@@ -34,12 +32,12 @@ public class JsoupOnlineDataService implements OnlineDataService {
 	}
 
 	@Override
-	public String getUrlHtmlElementDataById(String url,String id) {
-		
+	public String getUrlHtmlElementDataById(String url, String id) {
+
 		Document doc = getHTMLPage(url);
 		System.out.println(doc.text());
 		Element elementById = doc.getElementById(id);
-		
+
 		return elementById.html();
 	}
 

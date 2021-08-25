@@ -47,8 +47,8 @@ public class MailServiceImpl implements MailService {
 
 		for (StockAlerts alert : alerts) {
 			
-			if (alert.getAlertDiff().compareTo(StockConstants.RANGE_LOWER) >= 1
-					&& alert.getAlertDiff().compareTo(StockConstants.RANGE_UPPER) <= 1) {
+			if (alert.getAlertDiff().compareTo(StockConstants.RANGE_LOWER) >= 0
+					&& alert.getAlertDiff().compareTo(StockConstants.RANGE_UPPER) <= 0) {
 				mailThread = new Thread(new MailSendingThread(alert));
 				mailThread.start();
 			}
@@ -71,9 +71,11 @@ public class MailServiceImpl implements MailService {
 			
 			boolean isMailSend = sendHtmlEmails(alert);
 			if (isMailSend) {
+				LOG.info("Mail Sucess | mailto:"+alert.getUser().getEmailId());
 				alert.setMailSend(true);
 				alertService.save(alert);
 			}
+			
 		}
 
 	}
@@ -100,7 +102,7 @@ public class MailServiceImpl implements MailService {
 			javaMailSender.send(mimeMessage);
 			isMailSend = true;
 		} catch (MessagingException e) {
-			LOG.error("Error while sending mailto:"+alert.getUser().getEmailId(),e);
+			LOG.error("Error while sending mailto:"+alert.getUser().getEmailId()+" -: "+e);
 			isMailSend = false;
 		}
 		return isMailSend;

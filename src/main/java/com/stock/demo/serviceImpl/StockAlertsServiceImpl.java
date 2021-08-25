@@ -113,8 +113,7 @@ public class StockAlertsServiceImpl implements StockAlertService {
 
 	@Override
 	public List<StockAlerts> updateAlerts(Stock stock) {
-		List<StockAlerts> alerts = alertRepo.findByStockId(stock.getId());
-		alertRepo.findByStockIdAndIsAlertEnabledAndIsMailSend(stock.getId(),true,false);
+		List<StockAlerts> alerts = alertRepo.findByStockIdAndIsAlertEnabledAndIsMailSend(stock.getId(),true,false);
 		if(alerts != null) {
 			alerts.forEach((e) -> {
 				BigDecimal alertDiff = StockInfoConverter

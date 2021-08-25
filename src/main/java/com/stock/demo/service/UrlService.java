@@ -13,4 +13,8 @@ public interface UrlService {
 	};
 	
 	String stockPriceElementId();
+	
+	default String getCompanyHistoricalDataUrl(String symbol,String series,String from,String to) {
+		return null;
+	}
 }

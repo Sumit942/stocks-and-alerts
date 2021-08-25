@@ -26,6 +26,6 @@ public interface Urls {
 	static String NSE_HOME = "https://www.nseindia.com/";
 	static String NSE_LIVE_URL = "";
 	static String NSE_COMPANY_DROPDOWN_OPTIONS = NSE_HOME+"api/search/autocomplete?";	//requestParam - q
-	
+	static String NSE_COMPANY_HISTORICAL_DATA = "https://www.nseindia.com/api/historical/cm/equity?";	//requestParams --symbol=TCS&series=[%22EQ%22]&from=17-08-2021&to=24-08-2021
 	/** END - List of new nse website urls **/
 }

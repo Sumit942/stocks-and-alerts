@@ -1,5 +1,6 @@
 package com.stock.demo.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -47,6 +48,7 @@ public class StockController {
 		
 		model.addAttribute("user", user);	//for demo purpose
 		List<StockAlerts> allStocks = stockAlertService.findByUserId(user.getId());
+		Collections.sort(allStocks, StockAlerts.alertDiffAsc);
 		model.addAttribute("stockAlertList", allStocks);
 		return "/stock/view";
 	}

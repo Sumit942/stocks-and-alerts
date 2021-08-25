@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.stock.demo.modal.StockHistoricalData;
 import com.stock.demo.modal.StockInfo;
 import com.stock.demo.service.LiveStockService;
 import com.stock.demo.service.OnlineDataService;
@@ -17,15 +18,15 @@ import com.stock.demo.service.UrlService;
 import com.stock.demo.utilities.converter.StockInfoConverter;
 
 @Service
-public class NSEStockServiceImpl implements LiveStockService {
+public class NSELiveStockServiceImpl implements LiveStockService {
 
 	@Autowired
 	@Qualifier("nseOldUrlServiceImpl")
-	UrlService urlService;
+	UrlService nseOldUrlService;
 
 	@Autowired
 	@Qualifier("NSENewUrlServiceImpl")
-	UrlService nseUrlService;
+	UrlService nseNewUrlService;
 
 	@Autowired
 	@Qualifier("jsoupOnlineDataService")
@@ -41,9 +42,9 @@ public class NSEStockServiceImpl implements LiveStockService {
 	}
 
 	private String getDataFromUrl(String symbol) {
-		String url = urlService.getCompanySearchUrlBySymbol(symbol);
+		String url = nseOldUrlService.getCompanySearchUrlBySymbol(symbol);
 		String textDataFromUrl = jsoup.getHtmlDataFromUrl(url);
-		textDataFromUrl = textDataFromUrl.substring(textDataFromUrl.indexOf("{"),textDataFromUrl.lastIndexOf("}")+1);
+		textDataFromUrl = textDataFromUrl != null ? textDataFromUrl.substring(textDataFromUrl.indexOf("{"),textDataFromUrl.lastIndexOf("}")+1) : null;
 		
 		return textDataFromUrl;
 	}
@@ -107,7 +108,10 @@ public class NSEStockServiceImpl implements LiveStockService {
 	@Override
 	public String getLastPrice(String symbol, String series) {
 		JSONObject stockJsonInfo = getLiveInfo(symbol, series);
-		return stockJsonInfo.get("lastPrice").toString();
+		if (stockJsonInfo != null)
+			return stockJsonInfo.get("lastPrice").toString();
+		else
+			return null;
 	}
 
 	@Override
@@ -116,7 +120,7 @@ public class NSEStockServiceImpl implements LiveStockService {
 		Object obj = null;
 		JSONObject jsonResponse = null;
 		JSONArray symbols = null;
-		String url = nseUrlService.getCompanyDropdownOptions(searchQuery);
+		String url = nseNewUrlService.getCompanyDropdownOptions(searchQuery);
 		String dataFromUrl = mywebClient.getHtmlDataFromUrl(url);
 		
 		try {
@@ -129,6 +133,16 @@ public class NSEStockServiceImpl implements LiveStockService {
 		}
 		
 		return null;
+	}
+
+	@Override
+	public StockHistoricalData getHistoricalData(String symbol, String series, String from, String to) {
+		StockHistoricalData data = null;
+		
+		String url = nseNewUrlService.getCompanyHistoricalDataUrl(symbol, series, from, to);
+		data = mywebClient.getHistoricalData(url);
+		
+		return data;
 	}
 	
 	
