@@ -10,11 +10,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.stock.demo.modal.StockAnalysisData;
 
 import lombok.Data;
 
@@ -51,14 +54,32 @@ public class StockAlerts {
 
 	@UpdateTimestamp
 	private Date updatedDate;
+	
+	private boolean highVolume;
+	
+	private boolean higherAvgVolume;
+	
+	private boolean highThan52;
+	
+	private double pChange;
+	
+	private boolean pChangeCrossed;
 
+	@Transient
+	private String mailType;
+	
+	@Transient
+	private StockAnalysisData analysisData;
+	
 	@Override
 	public String toString() {
-		return "StockAlerts [id=" + id + ", user=" + user.getId() + ", stock=" + stock.getId() + ", alertPrice="
-				+ alertPrice + ", targetPrice=" + targetPrice + ", alertDiff=" + alertDiff + ", isAlertEnabled="
-				+ isAlertEnabled + ", isMailSend=" + isMailSend + ", createdDate=" + createdDate + ", updatedDate="
-				+ updatedDate + "]";
+		return "StockAlerts [id=" + id + ", alertPrice=" + alertPrice + ", targetPrice=" + targetPrice + ", alertDiff="
+				+ alertDiff + ", isAlertEnabled=" + isAlertEnabled + ", isMailSend=" + isMailSend + ", createdDate="
+				+ createdDate + ", updatedDate=" + updatedDate + ", highVolume=" + highVolume + ", higherAvgVolume="
+				+ higherAvgVolume + ", pChange=" + pChange + ", pChangeCrossed=" + pChangeCrossed + "]";
 	}
+	
+	
 
 	public static Comparator<StockAlerts> alertDiffAsc = new Comparator<StockAlerts>() {
 

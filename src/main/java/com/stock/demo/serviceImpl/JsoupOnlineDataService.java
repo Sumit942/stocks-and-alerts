@@ -19,12 +19,13 @@ public class JsoupOnlineDataService implements OnlineDataService {
 			return null;
 	}
 
-	private Document getHTMLPage(String url) {
+	@Override
+	public Document getHTMLPage(String url) {
 		Document htmlContent = null;
 
 		try {
 //			System.out.println("getting live stock price from url- " + url);
-			htmlContent = Jsoup.connect(url).get();
+			htmlContent = Jsoup.connect(url).timeout(45000).get();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

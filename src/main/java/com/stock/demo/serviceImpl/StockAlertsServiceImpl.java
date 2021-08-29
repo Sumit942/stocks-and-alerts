@@ -78,7 +78,7 @@ public class StockAlertsServiceImpl implements StockAlertService {
 	 * Deleting Stock itself if there is no more StockAlerts added for this stock by
 	 * any Users
 	 * 
-	 * @param id
+	 * @param stockId
 	 */
 	public void postDelete(Long stockId) {
 
@@ -123,6 +123,17 @@ public class StockAlertsServiceImpl implements StockAlertService {
 		}
 		//saving the alerts with updated alertDifferences
 		return alertRepo.saveAll(alerts);
+	}
+
+	@Override
+	public List<StockAlerts> findByStockId(Long id) {
+		return alertRepo.findByStockId(id);
+	}
+
+	@Override
+	public List<StockAlerts> findByStockId_High52OrHighVolumeOrHigherAvgVolumeOrPChangeCrossed(Long stockId,
+			boolean high52, boolean highVol, boolean higAvhVol, boolean pChange) {
+		return alertRepo.findByStockId_HighVolumeOrHigherAvgVolumeOrPChangeCrossed(stockId, high52, highVol, higAvhVol, pChange);
 	}
 
 }

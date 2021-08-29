@@ -19,6 +19,11 @@ public class Urls24072021 extends UrlsProvider {
 	public String getNSE1_COMPANY_DROPDOWN_ONSELECT(String symbol) {
 		return NSE1_COMPANY_DROPDOWN_ONSELECT + "symbol=" + symbol;
 	}
+	
+	@Override
+	public String getNSE1_STOCK_JSON_RESPONSE(String symbol, String series) {
+		return super.getNSE1_STOCK_JSON_RESPONSE(symbol, series);
+	}
 
 	/** END - List of nse old website urls **/
 
@@ -43,6 +48,11 @@ public class Urls24072021 extends UrlsProvider {
 			url.append("&to=" + to);
 
 		return url.toString();
+	}
+	
+	@Override
+	public String getNSE_COMPANY_INFO_PAGE(String symbol) {
+		return super.getNSE_COMPANY_INFO_PAGE(symbol);
 	}
 	/** END - List of new nse website urls **/
 }

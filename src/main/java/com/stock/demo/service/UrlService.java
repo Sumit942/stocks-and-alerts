@@ -17,4 +17,16 @@ public interface UrlService {
 	default String getCompanyHistoricalDataUrl(String symbol,String series,String from,String to) {
 		return null;
 	}
+	
+	default String getCompanyJsonResponseUrl(String symbol) {
+		return null;
+	}
+	
+	default String getCompnayJsonReponseFromOldUrl (String symbol, String series) {
+		return null;
+	}
+	
+	default String getHistoricalDataFromOldUrl (String symbol, String series, String fromDate, String toDate) {
+		return null;
+	}
 }

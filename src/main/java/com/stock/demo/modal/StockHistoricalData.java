@@ -4,11 +4,14 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import com.stock.demo.entities.Stock;
+
 import lombok.Data;
 
 @Data
 public class StockHistoricalData {
 
+	Stock stock;
 	List<Row> data;
 	Meta meta;
 	

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Stock-Alert</title>
+</head>
+<body>
+<h2>Hi, <b th:text="${alert.user.firstName}"></b>  <b th:text="${alert.user.lastName}"></b></h2>
+
+<div>
+	Your Stock <b th:text="${alert.stock.companyName}"></b> (<b th:text="${alert.stock.symbol}"></b>) 
+	
+<!-- 	<span th:if="${alert.analysisData.high52}"> -->
+<!-- 	 	is Trading at 52 week high <b th:text="${alert.stock.lastPrice}"></b> <br> -->
+<!-- 	</span> -->
+	<span th:if="${alert.analysisData.volumeHighest}">
+		is Trading at High Volume  -> <b th:text="${alert.analysisData.highestTradedQty"></b> <br>
+	</span>
+	<span th:if=${alert.analysisData.pChangeCrossed}>
+		is Trading at <b th:text="${alert.analysisData.pChange}"></b> % <br>
+	</span>
+	
+</div>
+ 
+ <div>
+ <i>Regards,</i><br>
+ <i>stock-and-analysis</i>
+ </div>
+</body>
+</html>

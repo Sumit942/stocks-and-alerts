@@ -17,8 +17,12 @@ public interface StockAlertService {
 	
 	public StockAlerts findById(Long id);
 	
+	public List<StockAlerts> findByStockId(Long id);
+	
 	public StockAlerts findBySymbol(String symbol);
 
 	public List<StockAlerts> updateAlerts(Stock stock);
 
+	public List<StockAlerts> findByStockId_High52OrHighVolumeOrHigherAvgVolumeOrPChangeCrossed(Long stockId,
+			boolean high52, boolean highVol, boolean higAvhVol, boolean pChange);
 }

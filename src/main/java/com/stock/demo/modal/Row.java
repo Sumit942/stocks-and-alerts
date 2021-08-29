@@ -21,7 +21,7 @@ public class Row {
 	public String cH_MARKET_TYPE;
 	
 	@JsonProperty("CH_TRADE_HIGH_PRICE")
-	public int cH_TRADE_HIGH_PRICE;
+	public double cH_TRADE_HIGH_PRICE;
 	
 	@JsonProperty("CH_TRADE_LOW_PRICE")
 	public double cH_TRADE_LOW_PRICE;
@@ -39,7 +39,7 @@ public class Row {
 	public double cH_PREVIOUS_CLS_PRICE;
 	
 	@JsonProperty("CH_TOT_TRADED_QTY")
-	public int cH_TOT_TRADED_QTY;
+	public Long cH_TOT_TRADED_QTY;
 	
 	@JsonProperty("CH_TOT_TRADED_VAL")
 	public double cH_TOT_TRADED_VAL;

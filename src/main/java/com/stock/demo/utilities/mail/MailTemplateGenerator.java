@@ -1,4 +1,4 @@
-package com.stock.demo.utilities;
+package com.stock.demo.utilities.mail;
 
 import com.stock.demo.entities.StockAlerts;
 

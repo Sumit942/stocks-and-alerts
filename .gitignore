@@ -1,6 +1,8 @@
 # Compiled class file
 *.class
 *application.properties
+**.properties
+/**/**/*.properties
 
 # Log file
 *.log

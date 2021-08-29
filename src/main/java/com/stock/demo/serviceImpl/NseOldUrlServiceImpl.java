@@ -30,4 +30,14 @@ public class NseOldUrlServiceImpl implements UrlService {
 	public String stockPriceElementId() {
 		return UrlsProvider.NSE1_STOCK_HTML_ELEMENT_ID;
 	}
+	
+	@Override
+	public String getCompnayJsonReponseFromOldUrl(String symbol, String series) {
+		return urlProviders.getNSE1_STOCK_JSON_RESPONSE(symbol, series);
+	}
+	
+	@Override
+	public String getHistoricalDataFromOldUrl(String symbol, String series, String fromDate, String toDate) {
+		return urlProviders.getNSE1_COMPANY_HISTORICAL_DATA(symbol, series, fromDate, toDate);
+	}
 }

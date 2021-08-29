@@ -20,6 +20,8 @@ public interface Urls {
 	
 	static String NSE1_STOCK_HTML_ELEMENT_ID = "lastPrice";
 	
+	static String NSE1_STOCK_JSON_RESPONSE = "https://www1.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxGetQuoteJSON.jsp?";	//requestParam --symbol=WIPRO&series=EQ
+	
 	/**END - List of old nse website urls**/
 	
 	/** START - List of new nse website urls **/
@@ -27,5 +29,9 @@ public interface Urls {
 	static String NSE_LIVE_URL = "";
 	static String NSE_COMPANY_DROPDOWN_OPTIONS = NSE_HOME+"api/search/autocomplete?";	//requestParam - q
 	static String NSE_COMPANY_HISTORICAL_DATA = "https://www.nseindia.com/api/historical/cm/equity?";	//requestParams --symbol=TCS&series=[%22EQ%22]&from=17-08-2021&to=24-08-2021
+	
+	static String NSE_COMPANY_DATA_JSON_RESPONSE = "https://www.nseindia.com/api/quote-equity?";	//requestParam --symbol=TCS
+	static String NSE_COMPANY_INFO_PAGE = "https://www.nseindia.com/get-quotes/equity?";	//requestParam --symbol=MPHASIS
+	
 	/** END - List of new nse website urls **/
 }

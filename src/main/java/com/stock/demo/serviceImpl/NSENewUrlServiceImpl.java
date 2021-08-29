@@ -44,4 +44,9 @@ public class NSENewUrlServiceImpl implements UrlService {
 	public String getCompanyHistoricalDataUrl(String symbol, String series, String from, String to) {
 		return urlsProvider.getNSE_COMPANY_HISTORICAL_DATA(symbol, series, from, to);
 	}
+	
+	@Override
+	public String getCompanyJsonResponseUrl(String symbol) {
+		return urlsProvider.getNSE_COMPANY_DATA_JSON_RESPONSE(symbol);
+	}
 }

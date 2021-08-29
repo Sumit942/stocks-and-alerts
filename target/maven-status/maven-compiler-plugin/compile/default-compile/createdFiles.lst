@@ -14,6 +14,7 @@ com\stock\demo\schedulars\PriceUpdateSchedular.class
 com\stock\demo\serviceImpl\UserServiceImpl.class
 com\stock\demo\utilities\url\UrlsProvider.class
 com\stock\demo\serviceImpl\StockServiceImpl.class
+com\stock\demo\entities\StockAlerts$1.class
 com\stock\demo\service\UrlService.class
 com\stock\demo\service\LiveStockService.class
 com\stock\demo\exception\UserNotFoundException.class
