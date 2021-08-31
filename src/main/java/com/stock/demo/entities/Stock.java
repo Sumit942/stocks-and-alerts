@@ -45,15 +45,23 @@ public class Stock {
 	@UpdateTimestamp
 	private Date updatedDate;
 	
+	@Min(value = 0)
 	private Double high52;
 	
+	@Min(value = 0)
 	private Double low52;
 	
+	@Min(value = 0)
 	private Double pChange;
 	
+	@Min(value = 0)
 	private Double dayHigh;
 	
+	@Min(value = 0)
 	private Double dayLow;
+	
+	@Min(value = 0)
+	private Double open;
 	
 	@OneToMany(mappedBy = "stock")
 	private List<StockAlerts> alerts;

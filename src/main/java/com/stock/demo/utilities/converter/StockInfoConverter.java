@@ -58,6 +58,8 @@ public class StockInfoConverter {
 			sInfo.setLow52(Double.valueOf(json.get("low52").toString().replaceAll(",", "")));
 			
 			sInfo.setPChange(Double.valueOf(json.get("pChange").toString().replaceAll(",", "")));
+
+			sInfo.setOpen(Double.valueOf(json.get("open").toString().replaceAll(",", "")));
 			
 			return sInfo;
 		} catch (Exception e) {

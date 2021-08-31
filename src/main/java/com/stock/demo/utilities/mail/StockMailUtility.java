@@ -25,24 +25,21 @@ public class StockMailUtility {
 
 		} else if (StockConstants.ANALYSIS_MAIL.equals(stock.getMailType())) {
 
-			boolean flag = false;
 			StringBuilder sb = new StringBuilder();
 			
 			sb.append(stock.getStock().getSymbol());
 			sb.append("@");
-			if (stock.getAnalysisData().isHigh52()) {
-				flag = true;
+			if (stock.isHighThan52() && stock.getAnalysisData().isHigh52()) {
 				sb.append(" 52WeekHigh |");
 			}
 			if (stock.isHighVolume() && stock.getAnalysisData().isVolumeHighest()) {
-				sb.append(" High Volume ");
-				if (flag) {
-					sb.append("|");
-				}
-				flag = true;
+				sb.append("| High Volume |");
+			}
+			if (stock.isHigherAvgVolume() && stock.getAnalysisData().isVolumeHigherThanAvg()) {
+				sb.append("| Higher Average Volume |");
 			}
 			if (stock.isPChangeCrossed() && stock.getAnalysisData().isPChangeCrossed()) {
-				sb.append("High Change in (%)");
+				sb.append("| High Change in (%) |");
 			}
 			
 			return sb.toString();

@@ -48,16 +48,16 @@ public class StockUpdateSchedular {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(StockUpdateSchedular.class);
 
-	@Scheduled(cron = "0 * 9-13 * * *")
+	@Scheduled(cron = "0 * 9-15 * * MON-FRI")
 	public void updateStockInfo() {
 
 		LOG.info("\n\t\t\t\t\t\t\t\t\t<<<-----Stock priceUpdater----->>>");
-		/*List<Stock> savedStocksList = stockService.findAll();
+		List<Stock> savedStocksList = stockService.findAll();
 		savedStocksList.forEach((stock) -> {
 //		Stock stock = stockService.findById(1L);
 			Thread alertThread = new Thread(new StockAlertThread(stock));
 			alertThread.start();
-		});*/
+		});
 	}
 
 //	@Scheduled(cron = "0 * * * * *")
@@ -72,7 +72,7 @@ public class StockUpdateSchedular {
 		});
 	}
 
-//	@Scheduled(cron = "0 * * * * *")
+	@Scheduled(cron = "0 0/10 9-16 * * MON-FRI")
 	public void analyseStockFromNseOldUrl() {
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat(StockConstants.DD_MM_YYYY);
@@ -174,6 +174,10 @@ public class StockUpdateSchedular {
 			
 			boolean flag = false;
 
+			if (stock2.getOpen() == null || stock2.getOpen().compareTo(liveInfo.getOpen()) != 0) {
+				flag = true;
+				stock2.setOpen(liveInfo.getOpen());
+			}
 			if (stock2.getLastPrice() == null || stock2.getLastPrice().compareTo(liveInfo.getLastPrice()) != 0) {
 				flag = true;
 				stock2.setLastPrice(liveInfo.getLastPrice());
@@ -192,7 +196,7 @@ public class StockUpdateSchedular {
 			} if (stock2.getPChange() == null || stock2.getPChange().compareTo(liveInfo.getPChange()) != 0) {
 				flag = true;
 				stock2.setPChange(liveInfo.getPChange());
-			} if (stock2.getSeries() == null) {
+			}if (stock2.getSeries() == null) {
 				flag = true;
 				stock2.setSeries(liveInfo.getSeries());
 			}

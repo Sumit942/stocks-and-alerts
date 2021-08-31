@@ -89,16 +89,27 @@
 			</fieldset>
 		</div>
 		<div class="row mb-3">
-			<fieldset class="form-group col-md-2">
-				<form:label path="highThan52" class="form-label">52 Week high:  </form:label>
+			<fieldset class="form-group col-md-3">
+				<form:label path="highThan52" class="form-label">52 Week high Alert</form:label><br>
 				<form:radiobutton path="highThan52" value="true" />Yes
 				<form:radiobutton path="highThan52" value="false" />No
 			</fieldset>
-			<fieldset class="form-group col-md-2">
-				<form:label path="lowThan52" class="form-label">52 Week low:  </form:label>
-				<form:radiobutton path="lowThan52" value="true" />Yes
-				<form:radiobutton path="lowThan52" value="false" />No
+			<fieldset class="form-group col-md-3">
+				<form:label path="highVolume">High Volume Alert</form:label><br>
+				<form:radiobutton path="highVolume" value="true"/>Yes
+				<form:radiobutton path="highVolume" value="false"/>No
 			</fieldset>
+			<fieldset class="form-group col-md-3">
+				<form:label path="higherAvgVolume">High Average Volume Alert</form:label><br>
+				<form:radiobutton path="higherAvgVolume" value="true"/>Yes
+				<form:radiobutton path="higherAvgVolume" value="false"/>No
+			</fieldset>
+			<fieldset class="form-group col-md-3">
+				<form:label path="pChangeCrossed">Change (%) alert</form:label><br>
+				<form:radiobutton path="pChangeCrossed" value="true"/>Yes
+				<form:radiobutton path="pChangeCrossed" value="false"/>No
+			</fieldset>
+			
 		</div>
 		<input type="submit" class="btn btn-primary" value="Submit">
 	</form:form>
@@ -169,6 +180,7 @@
 				$('#stock\\.high52').val(res.high52)
 				$('#stock\\.low52').val(res.low52)
 				$('#stock\\.pChange').val(res.pchange)
+				$('#stock\\.series').val(res.series)
 				$('#refresh').attr("class","fa fa-refresh")
 			},
 			error : function(err) {

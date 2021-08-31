@@ -13,6 +13,7 @@ import lombok.Data;
 @XmlRootElement
 @Data
 public class StockInfo {
+	private Double open;
 	private BigDecimal lastPrice;
 	private String symbol;
 	private String series;

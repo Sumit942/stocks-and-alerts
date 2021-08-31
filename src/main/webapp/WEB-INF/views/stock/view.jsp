@@ -1,6 +1,10 @@
 <%@ include file="../../common/header.jspf"%>
 <%@ include file="../../common/navigation.jspf"%>
-
+<style>
+.lastPriceCol {
+	text-align: left;
+}
+</style>
 <div class="container-fluid">
 	<h2>Stocks Added by you</h2>
 	<c:if test="${not empty message}">
@@ -22,8 +26,9 @@
 <!-- 				<th>Series</th> -->
 				<th>Alert Price</th>
 <!-- 				<th>Target Price</th> -->
-				<th>Alert Difference (%)</th>
+				<th>Alert Diff(%)</th>
 				<th>Live Price</th>
+				<th>52 Week</th>
 				<th>Added Date</th>
 				<th>Last Updated Date</th>
 				<th>Action</th>
@@ -51,7 +56,15 @@
 						<td>
 							<c:if test="${alerts.alertDiff != null}">${alerts.alertDiff} %</c:if> 
 						</td>
-						<td>${alerts.stock.lastPrice}</td>
+						<td><a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" 
+									title="<div class='lastPriceCol'>
+										   <b>O:</b> ${alerts.stock.open}<br>
+										   </div>">
+								${alerts.stock.lastPrice}
+							</a><br>
+							<b>H:</b> ${alerts.stock.dayHigh} <b>|</b> <b>L:</b> ${alerts.stock.dayLow}
+						</td>
+						<td><b>H</b>: ${alerts.stock.high52} <br> <b>L</b>: ${alerts.stock.low52} </td>
 						<td>${alerts.createdDate}</td>
 						<td>${alerts.updatedDate}</td>
 						<td><a

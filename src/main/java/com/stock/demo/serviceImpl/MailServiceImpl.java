@@ -73,20 +73,23 @@ public class MailServiceImpl implements MailService {
 				return;
 			}
 
-			if (true) {
-				LOG.info("mailto:" + alert.getUser().getEmailId());
-				return;
-			}
-
 			boolean isMailSend = sendHtmlEmails(alert);
 			if (isMailSend) {
 				LOG.info("Mail Sucess | mailto:" + alert.getUser().getEmailId());
-				if (StockConstants.ANALYSIS_MAIL.equals(alert.getMailType())) {
+				if (StockConstants.ALERT_MAIL.equals(alert.getMailType())) {
 					alert.setMailSend(true);
-				} else if (StockConstants.ALERT_MAIL.equals(alert.getMailType())) {
-					alert.setHighVolume(alert.isHighVolume() ? false : true);
-					alert.setHigherAvgVolume(alert.isHigherAvgVolume() ? false : true);
-					alert.setPChangeCrossed(alert.isPChangeCrossed() ? false : true);
+				} else if (StockConstants.ANALYSIS_MAIL.equals(alert.getMailType())) {
+					if (alert.getAnalysisData().isVolumeHighest())
+						alert.setHighVolume(alert.isHighVolume() ? false : alert.isHighVolume());
+					
+					if (alert.getAnalysisData().isHigh52())
+						alert.setHighThan52(alert.isHighThan52() ? false : alert.isHighThan52());
+					
+					if (alert.getAnalysisData().isVolumeHigherThanAvg())
+						alert.setHigherAvgVolume(alert.isHigherAvgVolume() ? false : alert.isHigherAvgVolume());
+					
+					if (alert.getAnalysisData().isPChangeCrossed())
+						alert.setPChangeCrossed(alert.isPChangeCrossed() ? false : alert.isPChangeCrossed());
 				}
 				alertService.save(alert);
 
