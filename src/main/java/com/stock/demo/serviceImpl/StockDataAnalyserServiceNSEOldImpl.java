@@ -2,6 +2,8 @@ package com.stock.demo.serviceImpl;
 
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -163,57 +165,54 @@ public class StockDataAnalyserServiceNSEOldImpl implements IStockDataAnalyserSer
 
 	@Override
 	public StockAnalysisData analyseStockOldNse(StockHistoricalDataList dataList) {
-		boolean sendMail = false;
+		
+		int listSize = dataList.getDataNseOlds().size();
+		
 		StockAnalysisData data = new StockAnalysisData();
-
+		data.setFromDate(dataList.getDataNseOlds().get(listSize -1).getDate());
+		data.setToDate(dataList.getDataNseOlds().get(0).getDate());
+		
 		Long lastTradedQty = dataList.getDataNseOlds().get(0).getTotalTradedQty();
 		Long highestTradedQty = 0L;
 		Long lowestTradedQty = lastTradedQty;
-		Long totalTradedQty = 0l,avgTradedQty = 0l;
+		Long totalTradedQty = 0L, avgTradedQty = 0L;
 
-		for (int i = 1; i < dataList.getDataNseOlds().size(); i++) {
+		for (int i = 1; i < listSize; i++) {
 			StockHistoricalDataNseOld dataNseOld = dataList.getDataNseOlds().get(i);
 			Long tempQty = dataNseOld.getTotalTradedQty();
-			
+
 			highestTradedQty = highestTradedQty > tempQty ? highestTradedQty : tempQty;
 
 			lowestTradedQty = lowestTradedQty < dataNseOld.getTotalTradedQty() ? lowestTradedQty : tempQty;
-			
-			totalTradedQty+=tempQty;
+
+			totalTradedQty += tempQty;
 		}
 		// higest qty
 		data.setHighestTradedQty(highestTradedQty);
 		data.setVolumeHighest(lastTradedQty >= highestTradedQty);
-		sendMail = sendMail || data.isVolumeHighest();
 
 		// lowest qty
 		data.setLowestTradedQty(lowestTradedQty);
 		data.setVolumeLowest(lastTradedQty <= lowestTradedQty);
-		sendMail = sendMail || data.isVolumeLowest();
 
 		// average qty
-		avgTradedQty = totalTradedQty/(dataList.getDataNseOlds().size() - 1);
+		avgTradedQty = totalTradedQty / (dataList.getDataNseOlds().size() - 1);
 		data.setAvgTradedQty(avgTradedQty);
 		data.setVolumeHigherThanAvg(lastTradedQty > avgTradedQty);
-		sendMail = sendMail || data.isVolumeHigherThanAvg();
 
-		// pchange
+		// percentage of change
 		double pChange = percentageOfChangeFromOldNseUrl(dataList);
 		data.setPChange(pChange);
 		data.setPChangeCrossed(pChange > StockConstants.PERC_CHANGE);
-		sendMail = sendMail || data.isPChangeCrossed();
 
-		// is present Price higher Than or equal to 52 week
-		data.setHigh52(
-				dataList.getStock().getLastPrice().doubleValue() >= dataList.getStock().getHigh52());
-		sendMail = sendMail || data.isHigh52();
+		// is present Price higher Than or equal to 52 week high
+		data.setHigh52(dataList.getStock().getDayHigh().doubleValue() >= dataList.getStock().getHigh52());
 
-		// is present Price lower Than or equal to 52 week
-		data.setLow52(
-				dataList.getStock().getLastPrice().doubleValue() <= dataList.getStock().getLow52());
-		sendMail = sendMail || data.isLow52();
+		// is present Price lower Than or equal to 52 week low
+		data.setLow52(dataList.getStock().getDayLow().doubleValue() <= dataList.getStock().getLow52());
 
-		data.setSendMail(sendMail);
+		data.setSendMail(data.isVolumeHighest() || data.isVolumeLowest() || data.isVolumeHigherThanAvg()
+				|| data.isPChangeCrossed() || data.isHigh52() || data.isLow52());
 
 		return data;
 
@@ -221,16 +220,22 @@ public class StockDataAnalyserServiceNSEOldImpl implements IStockDataAnalyserSer
 
 	public double percentageOfChangeFromOldNseUrl(StockHistoricalDataList dataList) {
 		List<StockHistoricalDataNseOld> nseOlds = dataList.getDataNseOlds();
-		
+
 		double currentPrice = nseOlds.get(0).getLastTradedPrice();
 		double oldPrice = nseOlds.get(nseOlds.size() - 1).getLastTradedPrice();
-		
-		double priceChange = oldPrice - currentPrice;
-		double priceByHundred = currentPrice / 100;
 
-		double percentageOfChange = Math.round(priceChange / priceByHundred);
+		double priceChange = currentPrice - oldPrice;
+		double priceByHundred = oldPrice / 100;
+
+		double n = (priceChange / priceByHundred);
+		
+		//rounding upto 2 decimal places
+		DecimalFormat dFormat = new DecimalFormat("#.##");
+		dFormat.setRoundingMode(RoundingMode.CEILING);
+		
+		double percentageOfChange = Double.valueOf(dFormat.format(n));
 
 		return percentageOfChange;
-		
+
 	}
 }

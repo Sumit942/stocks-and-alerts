@@ -50,7 +50,7 @@ public class MailServiceImpl implements MailService {
 			for (StockAlerts alert : alerts) {
 
 				if (alert.getAlertDiff().compareTo(StockConstants.RANGE_LOWER) >= 0
-						&& alert.getAlertDiff().compareTo(StockConstants.RANGE_UPPER) <= 0) {
+						&& alert.getAlertDiff().compareTo(StockConstants.RANGE_UPPER) <= 0 && !alert.isMailSend()) {
 					alert.setMailType(StockConstants.ALERT_MAIL);
 					mailThread = new Thread(new MailSendingThread(alert));
 					mailThread.start();
@@ -73,13 +73,17 @@ public class MailServiceImpl implements MailService {
 				return;
 			}
 
+			if (true) {
+				LOG.info("mailto:" + alert.getUser().getEmailId());
+				return;
+			}
+
 			boolean isMailSend = sendHtmlEmails(alert);
 			if (isMailSend) {
 				LOG.info("Mail Sucess | mailto:" + alert.getUser().getEmailId());
 				if (StockConstants.ANALYSIS_MAIL.equals(alert.getMailType())) {
 					alert.setMailSend(true);
 				} else if (StockConstants.ALERT_MAIL.equals(alert.getMailType())) {
-					alert.setHighThan52(alert.isHighThan52() ? false : true);
 					alert.setHighVolume(alert.isHighVolume() ? false : true);
 					alert.setHigherAvgVolume(alert.isHigherAvgVolume() ? false : true);
 					alert.setPChangeCrossed(alert.isPChangeCrossed() ? false : true);
@@ -126,12 +130,45 @@ public class MailServiceImpl implements MailService {
 				true, true, true, true);
 
 		Thread mailThread = null;
-		for (StockAlerts stockAlerts : list) {
-			stockAlerts.setMailType(StockConstants.ANALYSIS_MAIL);
-			stockAlerts.setAnalysisData(analysisData);
-			mailThread = new Thread(new MailSendingThread(stockAlerts));
+		for (StockAlerts analysis : list) {
+
+			if (!isAnalysisMailToBeSend(analysis, analysisData)) {
+				continue;
+			}
+
+			analysis.setMailType(StockConstants.ANALYSIS_MAIL);
+			analysis.setAnalysisData(analysisData);
+
+			mailThread = new Thread(new MailSendingThread(analysis));
 			mailThread.start();
 		}
+	}
+
+	/**
+	 * will check the condition whether to trigger the analysis mail or not.
+	 * 
+	 * @param analysis
+	 * @param analysisData
+	 * @return
+	 */
+	private boolean isAnalysisMailToBeSend(StockAlerts analysis, StockAnalysisData analysisData) {
+
+		boolean highVolume = false, highAvgVolume = false, high52 = false, pChange = false;
+
+		highVolume = (analysisData.isVolumeHighest() || analysisData.isVolumeLowest()) && analysis.isHighVolume();
+		highAvgVolume = analysisData.isVolumeHigherThanAvg() && analysis.isHigherAvgVolume();
+		high52 = (analysisData.isHigh52() || analysisData.isLow52()) && analysis.isHighThan52();
+
+		if (analysis.isPChangeCrossed() && analysisData.isPChangeCrossed()) {
+			if (analysis.getPChangeTrigger() == null) {
+				pChange = true;
+			} else {
+				pChange = analysis.getPChangeTrigger() > StockConstants.PERC_CHANGE;
+			}
+		}
+
+		return highVolume || highAvgVolume || high52 || pChange;
+
 	}
 
 }

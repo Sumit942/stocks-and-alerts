@@ -3,22 +3,53 @@
 <link rel="stylesheet" 
 	  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
-<div class="container">
+<div class="container mt-3">
 	<form:form action="add" method="post" modelAttribute="StockAlerts">
 		<form:hidden path="id" />
 		<form:hidden path="user.id" value="${user.id}"/>
 		<form:hidden path="stock.id" />
 		<div class="row mb-3">
-			<fieldset class="form-group col-md-6">
+			<fieldset class="form-group col-md-5">
 				<form:label path="stock.symbol" class="form-label">Symbol</form:label>
-				<form:input path="stock.symbol" class="form-control" readonly="${ id != null ? 'readonly' : ''}"/>
+				<form:input path="stock.symbol" class="form-control"/>
 				<form:errors path="stock.symbol" class="text-warning" />
+			</fieldset>
+			<fieldset class="form-group col-md-1">
+				<form:label path="stock.series" class="form-label">Series:</form:label>
+				<form:input path="stock.series" class="form-control" readonly="true"/>
+				<form:errors path="stock.series" class="text-warning" />
 			</fieldset>
 			<fieldset class="form-group col-md-6">
 				<form:label path="stock.companyName" class="form-label">Company Name</form:label>
-				<form:input path="stock.companyName" class="form-control"
-					readonly="true" />
+				<form:input path="stock.companyName" class="form-control" readonly="true" />
 				<form:errors path="stock.companyName" class="text-warning" />
+			</fieldset>
+		</div>
+		<div class="row mb-3">
+			<fieldset class="form-group col-md-3">
+				<form:label path="stock.dayHigh" class="form-label">Day High</form:label>
+				<form:input path="stock.dayHigh" class="form-control" readonly="true" />
+				<form:errors path="stock.dayHigh" class="text-warning" />
+			</fieldset>
+			<fieldset class="form-group col-md-2">
+				<form:label path="stock.dayLow" class="form-label">Day Low</form:label>
+				<form:input path="stock.dayLow" class="form-control" readonly="true" />
+				<form:errors path="stock.dayLow" class="text-warning" />
+			</fieldset>
+			<fieldset class="form-group col-md-3">
+				<form:label path="stock.high52" class="form-label">52 week high</form:label>
+				<form:input path="stock.high52" class="form-control" readonly="true" />
+				<form:errors path="stock.high52" class="text-warning" />
+			</fieldset>
+			<fieldset class="form-group col-md-2">
+				<form:label path="stock.low52" class="form-label">52 week Low</form:label>
+				<form:input path="stock.low52" class="form-control" readonly="true" />
+				<form:errors path="stock.low52" class="text-warning" />
+			</fieldset>
+			<fieldset class="form-group col-md-2">
+				<form:label path="stock.pChange" class="form-label">Change (%)</form:label>
+				<form:input path="stock.pChange" class="form-control" readonly="true" />
+				<form:errors path="stock.pChange" class="text-warning" />
 			</fieldset>
 		</div>
 		<div class="row mb-3">
@@ -55,6 +86,18 @@
 				<form:label path="MailSend" class="form-label">Mail Send:  </form:label>
 				<form:radiobutton path="MailSend" value="true" />Yes
 				<form:radiobutton path="MailSend" value="false" />No
+			</fieldset>
+		</div>
+		<div class="row mb-3">
+			<fieldset class="form-group col-md-2">
+				<form:label path="highThan52" class="form-label">52 Week high:  </form:label>
+				<form:radiobutton path="highThan52" value="true" />Yes
+				<form:radiobutton path="highThan52" value="false" />No
+			</fieldset>
+			<fieldset class="form-group col-md-2">
+				<form:label path="lowThan52" class="form-label">52 Week low:  </form:label>
+				<form:radiobutton path="lowThan52" value="true" />Yes
+				<form:radiobutton path="lowThan52" value="false" />No
 			</fieldset>
 		</div>
 		<input type="submit" class="btn btn-primary" value="Submit">
@@ -114,13 +157,18 @@
 	function setLastPrice(symbol) {
 		$('#refresh').attr("class","fa fa-refresh fa-spin");
 		$.ajax({
-			url : '${pageContext.request.contextPath}/live/lastPrice',
+			url : '${pageContext.request.contextPath}/live/priceInfo',
 			datatype : 'json',
 			data : {
 				symbol : symbol
 			},
 			success : function(res) {
-				$('#stock\\.lastPrice').val(res)
+				$('#stock\\.lastPrice').val(res.lastPrice)
+				$('#stock\\.dayHigh').val(res.dayHigh)
+				$('#stock\\.dayLow').val(res.dayLow)
+				$('#stock\\.high52').val(res.high52)
+				$('#stock\\.low52').val(res.low52)
+				$('#stock\\.pChange').val(res.pchange)
 				$('#refresh').attr("class","fa fa-refresh")
 			},
 			error : function(err) {

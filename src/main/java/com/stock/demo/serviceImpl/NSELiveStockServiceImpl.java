@@ -118,8 +118,8 @@ public class NSELiveStockServiceImpl implements LiveStockService {
 			stockDataJsonInfo = (JSONObject) dataKeyOfJson.get(0);
 
 			stockInfo = StockInfoConverter.getEntityFromJson(stockDataJsonInfo);
-		} catch (ParseException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			log.error("Error Converting to Json for Stock - "+symbol +" , Error Message: "+e);
 		}
 
 		return stockInfo;
@@ -207,7 +207,7 @@ public class NSELiveStockServiceImpl implements LiveStockService {
 	@Override
 	public List<StockHistoricalDataNseOld> getStockHistoricalDataFromOldNSE(String symbol, String series,
 			String fromDate, String toDate) {
-		String url = nseOldUrlService.getHistoricalDataFromOldUrl(symbol, "EQ", fromDate, toDate);
+		String url = nseOldUrlService.getHistoricalDataFromOldUrl(symbol, series, fromDate, toDate);
 		try {
 			Document htmlPage = jsoup.getHTMLPage(url);
 			Elements htmlDataList = htmlPage.getElementsByTag("tr");

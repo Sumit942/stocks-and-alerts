@@ -23,6 +23,11 @@ public class StockInfoConverter {
 	}
 	
 	public static StockInfo getEntityFromJson(JSONObject json) {
+		
+		if (json == null) {
+			return null;
+		}
+		
 		StockInfo sInfo = null;
 
 		try {

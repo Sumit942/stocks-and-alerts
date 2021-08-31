@@ -30,7 +30,7 @@ public class StockMailUtility {
 			
 			sb.append(stock.getStock().getSymbol());
 			sb.append("@");
-			if (stock.isHighThan52() && stock.getAnalysisData().isHigh52()) {
+			if (stock.getAnalysisData().isHigh52()) {
 				flag = true;
 				sb.append(" 52WeekHigh |");
 			}

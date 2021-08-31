@@ -12,20 +12,29 @@
 <h2>Hi, <b th:text="${alert.user.firstName}"></b>  <b th:text="${alert.user.lastName}"></b></h2>
 
 <div>
-	Your Stock <b th:text="${alert.stock.companyName}"></b> (<b th:text="${alert.stock.symbol}"></b>) 
+	Your Stock <b th:text="${alert.stock.companyName}"></b> (<b th:text="${alert.stock.symbol}"></b>)
 	
-<!-- 	<span th:if="${alert.analysisData.high52}"> -->
-<!-- 	 	is Trading at 52 week high <b th:text="${alert.stock.lastPrice}"></b> <br> -->
-<!-- 	</span> -->
+	<span th:if="${alert.analysisData.high52}">
+	 	is Trading at 52 week High  <b th:text="${alert.stock.dayHigh}"></b> <br>
+	</span>
+	<span th:if="${alert.analysisData.low52}">
+		is Trading at 52 week Low  <b th:text="${alert.stock.dayLow}"></b> <br>
+	</span>
 	<span th:if="${alert.analysisData.volumeHighest}">
-		is Trading at High Volume  -> <b th:text="${alert.analysisData.highestTradedQty"></b> <br>
+		is Trading with High Volume  -> <b th:text="${alert.analysisData.highestTradedQty"></b> <br>
+	</span>
+	<span th:if="${alert.analysisData.volumeHigherThanAvg}">
+		has recorded Higher than Average Volume -> <b th:text="${alert.analysisData.avgTradedQty"></b> <br>
+	</span>
+	<span th:if="${alert.analysisData.volumeLowest}">
+		has recorded Low Volume -> <b th:text="${alert.analysisData.lowerstTradedQty}"></b> <br>
 	</span>
 	<span th:if=${alert.analysisData.pChangeCrossed}>
-		is Trading at <b th:text="${alert.analysisData.pChange}"></b> % <br>
+		has recorded high change in percentage -> <b th:text="${alert.analysisData.pChange}"></b> % <br>
 	</span>
 	
 </div>
- 
+ <br><br>
  <div>
  <i>Regards,</i><br>
  <i>stock-and-analysis</i>

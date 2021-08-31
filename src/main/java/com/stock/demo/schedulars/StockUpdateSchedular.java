@@ -27,7 +27,7 @@ import com.stock.demo.utilities.StockConstants;
 
 @Component
 public class StockUpdateSchedular {
-
+	
 	@Autowired
 	LiveStockService liveStockService;
 
@@ -48,22 +48,22 @@ public class StockUpdateSchedular {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(StockUpdateSchedular.class);
 
-//	@Scheduled(cron = "0 * * * * *")
+	@Scheduled(cron = "0 * 9-13 * * *")
 	public void updateStockInfo() {
 
-		LOG.info("\n\t\t\t\t\t<<<-----Stock priceUpdater----->>>");
-		List<Stock> savedStocksList = stockService.findAll();
+		LOG.info("\n\t\t\t\t\t\t\t\t\t<<<-----Stock priceUpdater----->>>");
+		/*List<Stock> savedStocksList = stockService.findAll();
 		savedStocksList.forEach((stock) -> {
 //		Stock stock = stockService.findById(1L);
 			Thread alertThread = new Thread(new StockAlertThread(stock));
 			alertThread.start();
-		});
+		});*/
 	}
 
 //	@Scheduled(cron = "0 * * * * *")
 	public void analyseStockFromNseNewUrl() {
 
-		LOG.info("\n\t\t\t\t\t<<<------Stock Analysis-------->>>");
+		LOG.info("\n\t\t\t\t\t\t\t\t<<<------Stock Analysis-------->>>");
 		List<Stock> savedStocks = stockService.findAll();
 		savedStocks.forEach((stock) -> {
 
@@ -72,8 +72,8 @@ public class StockUpdateSchedular {
 		});
 	}
 
-	@Scheduled(cron = "0 * * * * *")
-	public void analysesStockFromNseOldUrl() {
+//	@Scheduled(cron = "0 * * * * *")
+	public void analyseStockFromNseOldUrl() {
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat(StockConstants.DD_MM_YYYY);
 		
@@ -102,6 +102,8 @@ public class StockUpdateSchedular {
 			if (stock == null || stock.getSymbol() == null) {
 				return;
 			}
+			
+			//getting historical data for the stock
 			List<StockHistoricalDataNseOld> historicalDatalist = liveStockService.getStockHistoricalDataFromOldNSE(stock.getSymbol(), stock.getSeries(), fromDate, toDate);
 			
 			if (historicalDatalist == null || historicalDatalist.isEmpty()) {
@@ -110,10 +112,13 @@ public class StockUpdateSchedular {
 			}
 			StockHistoricalDataList dataList = new StockHistoricalDataList();
 			dataList.setDataNseOlds(historicalDatalist);
-			dataList.setStock(stock);;
+			dataList.setStock(stock);
+			
+			//analysing the data
 			StockAnalysisData analysisData = analyserService.analyseStockOldNse(dataList);
 			analysisData.setStockId(stock.getId());
 
+			//sending mail if analyses is passed
 			if (analysisData.isSendMail()) {
 				mailService.sendAlertMails(analysisData);
 			}
@@ -162,6 +167,11 @@ public class StockUpdateSchedular {
 		 * @return true if stock info is changed
 		 */
 		private boolean willSendMail(Stock stock2, StockInfo liveInfo) {
+			
+			if (liveInfo == null) {
+				return false;
+			}
+			
 			boolean flag = false;
 
 			if (stock2.getLastPrice() == null || stock2.getLastPrice().compareTo(liveInfo.getLastPrice()) != 0) {

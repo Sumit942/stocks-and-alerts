@@ -55,13 +55,13 @@ public class StockAlerts {
 	@UpdateTimestamp
 	private Date updatedDate;
 	
+	private boolean highThan52;
+	
 	private boolean highVolume;
 	
 	private boolean higherAvgVolume;
 	
-	private boolean highThan52;
-	
-	private double pChange;
+	private Double pChangeTrigger;
 	
 	private boolean pChangeCrossed;
 
@@ -76,7 +76,7 @@ public class StockAlerts {
 		return "StockAlerts [id=" + id + ", alertPrice=" + alertPrice + ", targetPrice=" + targetPrice + ", alertDiff="
 				+ alertDiff + ", isAlertEnabled=" + isAlertEnabled + ", isMailSend=" + isMailSend + ", createdDate="
 				+ createdDate + ", updatedDate=" + updatedDate + ", highVolume=" + highVolume + ", higherAvgVolume="
-				+ higherAvgVolume + ", pChange=" + pChange + ", pChangeCrossed=" + pChangeCrossed + "]";
+				+ higherAvgVolume + ", pChangeTrigger=" + pChangeTrigger + ", pChangeCrossed=" + pChangeCrossed + "]";
 	}
 	
 	
