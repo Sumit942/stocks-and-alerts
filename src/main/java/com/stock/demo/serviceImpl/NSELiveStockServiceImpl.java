@@ -249,4 +249,10 @@ public class NSELiveStockServiceImpl implements LiveStockService {
 
 		return th;
 	}
+
+	@Override
+	public String getCustomHistory(String symbol, String fromDate, String toDate) {
+		// TODO Auto-generated method stub
+		return mywebClient.getCustomHistoricalData(symbol,fromDate,toDate);
+	}
 }

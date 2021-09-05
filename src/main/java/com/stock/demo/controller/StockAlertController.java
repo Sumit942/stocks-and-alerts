@@ -112,4 +112,12 @@ public class StockAlertController {
 		
 		return response;
 	}
+	
+	@GetMapping("customHistory")
+	public String getCustomHistory(@RequestParam("symbol") String symbol,
+			@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate) {
+		
+		return stockService.getCustomHistory(symbol,fromDate,toDate);
+	}
 }

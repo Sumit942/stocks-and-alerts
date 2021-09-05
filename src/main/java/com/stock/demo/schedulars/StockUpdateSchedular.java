@@ -1,8 +1,12 @@
 package com.stock.demo.schedulars;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +48,17 @@ public class StockUpdateSchedular {
 	@Qualifier("stockDataAnalyserServiceNSEOldImpl")
 	IStockDataAnalyserService analyserService;
 
-	private static String fromDate = "",toDate="";
+	private static String fromDate = null, toDate = null;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(StockUpdateSchedular.class);
 
+	@PostConstruct
+	public void init() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(StockConstants.DD_MM_YYYY);
+		toDate = LocalDate.now().minusDays(1).format(formatter);	//yesterday's date
+		fromDate = LocalDate.now().minusMonths(1).format(formatter);	//1month before date
+	}
+	
 	@Scheduled(cron = "0 * 9-15 * * MON-FRI")
 	public void updateStockInfo() {
 
@@ -75,11 +86,6 @@ public class StockUpdateSchedular {
 	@Scheduled(cron = "0 0/10 9-16 * * MON-FRI")
 	public void analyseStockFromNseOldUrl() {
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat(StockConstants.DD_MM_YYYY);
-		
-		toDate = dateFormat.format(new Date());
-		fromDate = "01-08-2021";
-		
 		LOG.info("\n\t\t\t\t\t<<<------Stock Analysis (nse old)-------->>>");
 		List<Stock> savedStocks = stockService.findAll();
 		savedStocks.forEach((stock) -> {

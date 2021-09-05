@@ -27,12 +27,17 @@
 		-> has recorded Higher than Average Volume -> <b th:text="${alert.analysisData.avgTradedQty}"></b> <br>
 	</span>
 	<span th:if="${alert.analysisData.volumeLowest}">
-		-> has recorded Low Volume -> <b th:text="${alert.analysisData.lowerstTradedQty}"></b> <br>
+		-> has recorded Low Volume -> <b th:text="${alert.analysisData.lowestTradedQty}"></b> <br>
 	</span>
 	<span th:if=${alert.analysisData.pChangeCrossed}>
 		-> has recorded high change in percentage -> <b th:text="${alert.analysisData.pChange}"></b> % <br>
 	</span>
 	
+	<span>
+		Analysis Recorded Between
+		From: <b th:text="${alert.analysisData.fromDate}"></b>
+		To: <b th:text="${alert.analysisData.toDate}"></b>
+	</span>
 </div>
  <br><br>
  <div>

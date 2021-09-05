@@ -176,9 +176,11 @@ public class StockDataAnalyserServiceNSEOldImpl implements IStockDataAnalyserSer
 		Long highestTradedQty = 0L;
 		Long lowestTradedQty = lastTradedQty;
 		Long totalTradedQty = 0L, avgTradedQty = 0L;
+		Double totalprice9d= 0.0, totalprice21d= 0.0, totalprice50d= 0.0, totalprice200d= 0.0;
+		Double ma9 = 0.0, ma21 = 0.0, ma50 = 0.0, ma200 = 0.0;
 
-		for (int i = 1; i < listSize; i++) {
-			StockHistoricalDataNseOld dataNseOld = dataList.getDataNseOlds().get(i);
+		for (int i = 0; i < listSize; i++) {
+			StockHistoricalDataNseOld dataNseOld = new StockHistoricalDataNseOld();
 			Long tempQty = dataNseOld.getTotalTradedQty();
 
 			highestTradedQty = highestTradedQty > tempQty ? highestTradedQty : tempQty;
@@ -186,6 +188,14 @@ public class StockDataAnalyserServiceNSEOldImpl implements IStockDataAnalyserSer
 			lowestTradedQty = lowestTradedQty < dataNseOld.getTotalTradedQty() ? lowestTradedQty : tempQty;
 
 			totalTradedQty += tempQty;
+			
+			totalprice9d += i <= 9 ? dataNseOld.getClosePrice() : 0.0;
+			
+			totalprice21d += i <= 21 ? dataNseOld.getClosePrice() : 0.0;
+			
+			totalprice50d += i <= 50 ? dataNseOld.getClosePrice() : 0.0;
+			
+			totalprice200d += i <= 200 ? dataNseOld.getClosePrice() : 0.0;
 		}
 		// higest qty
 		data.setHighestTradedQty(highestTradedQty);
@@ -205,17 +215,48 @@ public class StockDataAnalyserServiceNSEOldImpl implements IStockDataAnalyserSer
 		data.setPChange(pChange);
 		data.setPChangeCrossed(pChange > StockConstants.PERC_CHANGE);
 
+		//rounding upto 2 decimal places
+		DecimalFormat dFormat = new DecimalFormat("#.##");
+		dFormat.setRoundingMode(RoundingMode.CEILING);
+
+		//9 day moving average
+		data.setMa9d(Double.valueOf(dFormat.format(totalprice9d / 9)));
+		
+		//21 day moving average
+		data.setMa21d(Double.valueOf(dFormat.format(totalprice9d / 21)));
+		
+		//50 day moving average
+		data.setMa50d(Double.valueOf(dFormat.format(totalprice9d / 50)));
+		
+		//200 day moving average
+		data.setMa200d(Double.valueOf(dFormat.format(totalprice9d / 200)));
+		
 		// is present Price higher Than or equal to 52 week high
 		data.setHigh52(dataList.getStock().getDayHigh().doubleValue() >= dataList.getStock().getHigh52());
 
 		// is present Price lower Than or equal to 52 week low
 		data.setLow52(dataList.getStock().getDayLow().doubleValue() <= dataList.getStock().getLow52());
 
+		analyseMovingAverage(dataList, data, 7);
+		
 		data.setSendMail(data.isVolumeHighest() || data.isVolumeLowest() || data.isVolumeHigherThanAvg()
 				|| data.isPChangeCrossed() || data.isHigh52() || data.isLow52());
 
 		return data;
 
+	}
+
+	private void analyseMovingAverage(StockHistoricalDataList dataList, StockAnalysisData data, int range) {
+		Double ma200 = data.getMa200d(), ma50 = data.getMa50d(), temp200ma, temp50ma;
+		int listSize = dataList.getDataNseOlds().size();
+		int dayMinusRange =  listSize - range;
+		int i = 0;
+		
+		
+		for (i = dayMinusRange; i < listSize-1; i++) {
+			
+		}
+		
 	}
 
 	public double percentageOfChangeFromOldNseUrl(StockHistoricalDataList dataList) {

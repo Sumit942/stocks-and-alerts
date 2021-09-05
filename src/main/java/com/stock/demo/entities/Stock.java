@@ -51,7 +51,6 @@ public class Stock {
 	@Min(value = 0)
 	private Double low52;
 	
-	@Min(value = 0)
 	private Double pChange;
 	
 	@Min(value = 0)
@@ -69,7 +68,9 @@ public class Stock {
 	@Override
 	public String toString() {
 		return "Stock [id=" + id + ", symbol=" + symbol + ", companyName=" + companyName + ", series=" + series
-				+ ", lastPrice=" + lastPrice + ", createdDate=" + createdDate + ", updatedDate=" + updatedDate + "]";
+				+ ", lastPrice=" + lastPrice + ", createdDate=" + createdDate + ", updatedDate=" + updatedDate
+				+ ", high52=" + high52 + ", low52=" + low52 + ", pChange=" + pChange + ", dayHigh=" + dayHigh
+				+ ", dayLow=" + dayLow + ", open=" + open + "]";
 	}
 	
 }

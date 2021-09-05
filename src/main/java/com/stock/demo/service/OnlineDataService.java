@@ -27,5 +27,7 @@ public interface OnlineDataService {
 	default Root getStockLiveInfoFromNseOld(String url) {
 		return null;
 	}
+	
+	String getCustomHistoricalData(String symbol, String fromDate, String toDate);
 
 }

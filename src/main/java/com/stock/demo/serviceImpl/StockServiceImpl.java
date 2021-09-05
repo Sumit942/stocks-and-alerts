@@ -10,7 +10,10 @@ import com.stock.demo.exception.StockNotFoundException;
 import com.stock.demo.repo.StockRepository;
 import com.stock.demo.service.StockService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class StockServiceImpl implements StockService {
 
 	@Autowired
@@ -22,6 +25,7 @@ public class StockServiceImpl implements StockService {
 			return stockRepo.save(stock);
 		} catch (Exception e) {
 			System.out.println("Error saving stock with symbol - "+stock.getSymbol()+" : "+e);
+			log.error("Error saving stock "+stock, e);
 		}
 		return null;
 	}

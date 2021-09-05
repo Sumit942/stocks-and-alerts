@@ -28,4 +28,5 @@ public interface LiveStockService {
 	JSONObject getAnalysisResponse(String symbol, String series, String from, String to);
 	
 	List<StockHistoricalDataNseOld> getStockHistoricalDataFromOldNSE(String symbol, String series, String fromDate, String toDate);
+	String getCustomHistory(String symbol,String fromDate,String toDate);
 }

@@ -27,10 +27,9 @@ public class StockMailUtility {
 
 			StringBuilder sb = new StringBuilder();
 			
-			sb.append(stock.getStock().getSymbol());
-			sb.append("@");
+			sb.append(stock.getStock().getSymbol()+"@"+stock.getStock().getLastPrice());
 			if (stock.isHighThan52() && stock.getAnalysisData().isHigh52()) {
-				sb.append(" 52WeekHigh |");
+				sb.append("| 52WeekHigh |");
 			}
 			if (stock.isHighVolume() && stock.getAnalysisData().isVolumeHighest()) {
 				sb.append("| High Volume |");

@@ -137,4 +137,24 @@ public class MyWebClientOnlineDataService implements OnlineDataService {
 		return response;
 	}
 
+	@Override
+	public String getCustomHistoricalData(String symbol, String fromDate, String toDate) {
+		
+		String resp = "";
+		
+		String url = "https://www1.nseindia.com/products/dynaContent/common/productsSymbolMapping.jsp?symbol="+symbol+"&segmentLink=3&symbolCount=2&series=ALL&dateRange=+&fromDate="+fromDate+"&toDate="+toDate+"&dataType=PRICEVOLUMEDELIVERABLE";
+		
+		try {
+			resp = webClient.get().uri(url)
+					.retrieve()
+					.bodyToMono(String.class)
+					.block();
+		} catch (Exception e) {
+			LOG.error("Error getting custom history "+e);
+		}
+		
+		return resp;
+	}
+
+	
 }
