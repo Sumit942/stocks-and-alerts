@@ -1,9 +1,7 @@
 package com.stock.demo.schedulars;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -28,6 +26,7 @@ import com.stock.demo.service.MailService;
 import com.stock.demo.service.StockAlertService;
 import com.stock.demo.service.StockService;
 import com.stock.demo.utilities.StockConstants;
+import com.stock.demo.utilities.converter.StockInfoConverter;
 
 @Component
 public class StockUpdateSchedular {
@@ -55,8 +54,8 @@ public class StockUpdateSchedular {
 	@PostConstruct
 	public void init() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(StockConstants.DD_MM_YYYY);
-		toDate = LocalDate.now().minusDays(1).format(formatter);	//yesterday's date
-		fromDate = LocalDate.now().minusMonths(1).format(formatter);	//1month before date
+		toDate = LocalDate.now().minusDays(1).format(formatter);
+		fromDate = StockInfoConverter.getMovingAverageFromDate(201).format(formatter);
 	}
 	
 	@Scheduled(cron = "0 * 9-15 * * MON-FRI")
@@ -86,7 +85,7 @@ public class StockUpdateSchedular {
 	@Scheduled(cron = "0 0/10 9-16 * * MON-FRI")
 	public void analyseStockFromNseOldUrl() {
 
-		LOG.info("\n\t\t\t\t\t<<<------Stock Analysis (nse old)-------->>>");
+		LOG.info("\n\t\t\t\t\t<<<------Stock Analysis (nse old)-------->>>"+fromDate+" - "+toDate);
 		List<Stock> savedStocks = stockService.findAll();
 		savedStocks.forEach((stock) -> {
 

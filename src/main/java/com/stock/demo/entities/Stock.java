@@ -62,6 +62,18 @@ public class Stock {
 	@Min(value = 0)
 	private Double open;
 	
+	@Min(value = 0)
+	private Double ma200;
+	
+	@Min(value = 0)
+	private Double ma50;
+
+	@Min(value = 0)
+	private Double ma21;
+	
+	@Min(value = 0)
+	private Double ma9;
+	
 	@OneToMany(mappedBy = "stock")
 	private List<StockAlerts> alerts;
 

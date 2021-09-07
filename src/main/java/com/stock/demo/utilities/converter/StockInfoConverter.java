@@ -2,6 +2,8 @@ package com.stock.demo.utilities.converter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -102,5 +104,17 @@ public class StockInfoConverter {
 		}
 		
 		return dataNseOlds;
+	}
+	
+	public static LocalDate getMovingAverageFromDate(int minusDays) {
+		int minusWeekDays = minusDays;
+		LocalDate today = LocalDate.now(),temp = null;
+		for (int i = 0; i < minusWeekDays; i++) {
+			temp = today.minusDays(i);
+			if ( temp.getDayOfWeek().equals(DayOfWeek.SATURDAY) || temp.getDayOfWeek().equals(DayOfWeek.SUNDAY))
+				minusWeekDays++;
+		}
+		
+		return temp;
 	}
 }

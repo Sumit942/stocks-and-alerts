@@ -176,11 +176,15 @@ public class StockDataAnalyserServiceNSEOldImpl implements IStockDataAnalyserSer
 		Long highestTradedQty = 0L;
 		Long lowestTradedQty = lastTradedQty;
 		Long totalTradedQty = 0L, avgTradedQty = 0L;
-		Double totalprice9d= 0.0, totalprice21d= 0.0, totalprice50d= 0.0, totalprice200d= 0.0;
-		Double ma9 = 0.0, ma21 = 0.0, ma50 = 0.0, ma200 = 0.0;
-
-		for (int i = 0; i < listSize; i++) {
-			StockHistoricalDataNseOld dataNseOld = new StockHistoricalDataNseOld();
+		Double totalprice9dToday= 0.0, totalprice21dToday= 0.0, totalprice50dToday= 0.0, totalprice200dToday= 0.0;
+		Double totalprice9dYesterday= 0.0, totalprice21dYesterday= 0.0, totalprice50dYesterday= 0.0, totalprice200dYesterday= 0.0;
+//		Double ma9 = 0.0, ma21 = 0.0, ma50 = 0.0, ma200 = 0.0;
+		
+		log.info("analsing stock "+dataList.getStock().getSymbol()+" for "+listSize+" days");
+		
+		for (int i = 0; i < listSize-1; i++) {	//0 as moving average for 200 days from yesterday to be taken (list last value is not taken)
+												//listSize-1 -> 201 days before taken so
+			StockHistoricalDataNseOld dataNseOld = dataList.getDataNseOlds().get(i);
 			Long tempQty = dataNseOld.getTotalTradedQty();
 
 			highestTradedQty = highestTradedQty > tempQty ? highestTradedQty : tempQty;
@@ -188,15 +192,51 @@ public class StockDataAnalyserServiceNSEOldImpl implements IStockDataAnalyserSer
 			lowestTradedQty = lowestTradedQty < dataNseOld.getTotalTradedQty() ? lowestTradedQty : tempQty;
 
 			totalTradedQty += tempQty;
+			//below total price are taken from yesterday till ma from date
+			totalprice9dYesterday  += (listSize - i) <= 10 ? dataNseOld.getClosePrice() : 0.0;
 			
-			totalprice9d += i <= 9 ? dataNseOld.getClosePrice() : 0.0;
+			totalprice21dYesterday += (listSize - i) <= 22 ? dataNseOld.getClosePrice() : 0.0;
 			
-			totalprice21d += i <= 21 ? dataNseOld.getClosePrice() : 0.0;
+			totalprice50dYesterday += (listSize - i) <= 51 ? dataNseOld.getClosePrice() : 0.0;
 			
-			totalprice50d += i <= 50 ? dataNseOld.getClosePrice() : 0.0;
-			
-			totalprice200d += i <= 200 ? dataNseOld.getClosePrice() : 0.0;
+			totalprice200dYesterday+= (listSize - i) <= 201 ? dataNseOld.getClosePrice() : 0.0;
 		}
+		
+		//totalprice are for today are taken by subtracting the from date close price and adding today last price(listSize-1)
+		Double lastprice = + dataList.getDataNseOlds().get(listSize-1).getClosePrice();;
+		totalprice9dToday = -dataList.getDataNseOlds().get(listSize - 10).getClosePrice() + totalprice9dYesterday + lastprice;
+		totalprice21dToday = -dataList.getDataNseOlds().get(listSize - 22).getClosePrice() +totalprice21dYesterday - + lastprice;
+		totalprice50dToday = -dataList.getDataNseOlds().get(listSize - 51).getClosePrice() + totalprice50dYesterday - + lastprice;
+		totalprice200dToday = -dataList.getDataNseOlds().get(listSize - 201).getClosePrice() + totalprice200dYesterday - + lastprice;
+		
+		//rounding upto 2 decimal places
+		DecimalFormat dFormat = new DecimalFormat("#.##");
+		dFormat.setRoundingMode(RoundingMode.CEILING);
+
+		//9 day moving average yesterday
+		data.setMa9d_yestr(Double.valueOf(dFormat.format(totalprice9dYesterday / 9)));
+		
+		//9 day moving average today
+		data.setMa9d(Double.valueOf(dFormat.format(totalprice9dToday / 9)));
+		
+		//21 day moving average yesterday
+		data.setMa21d_yestr(Double.valueOf(dFormat.format(totalprice9dYesterday / 21)));
+		//21 day moving average today
+		data.setMa21d(Double.valueOf(dFormat.format(totalprice9dToday / 21)));
+		
+		//50 day moving average yesterday
+		data.setMa50d_yestr(Double.valueOf(dFormat.format(totalprice9dYesterday / 50)));
+		//50 day moving average today
+		data.setMa50d(Double.valueOf(dFormat.format(totalprice9dToday / 50)));		
+		
+		//200 day moving average yesterday
+		data.setMa200d_yestr(Double.valueOf(dFormat.format(totalprice9dYesterday / 200)));
+		//200 day moving average today
+		data.setMa200d(Double.valueOf(dFormat.format(totalprice9dToday / 200)));
+
+		analyseMovingAverage(dataList, data, 1);
+		
+		
 		// higest qty
 		data.setHighestTradedQty(highestTradedQty);
 		data.setVolumeHighest(lastTradedQty >= highestTradedQty);
@@ -215,29 +255,11 @@ public class StockDataAnalyserServiceNSEOldImpl implements IStockDataAnalyserSer
 		data.setPChange(pChange);
 		data.setPChangeCrossed(pChange > StockConstants.PERC_CHANGE);
 
-		//rounding upto 2 decimal places
-		DecimalFormat dFormat = new DecimalFormat("#.##");
-		dFormat.setRoundingMode(RoundingMode.CEILING);
-
-		//9 day moving average
-		data.setMa9d(Double.valueOf(dFormat.format(totalprice9d / 9)));
-		
-		//21 day moving average
-		data.setMa21d(Double.valueOf(dFormat.format(totalprice9d / 21)));
-		
-		//50 day moving average
-		data.setMa50d(Double.valueOf(dFormat.format(totalprice9d / 50)));
-		
-		//200 day moving average
-		data.setMa200d(Double.valueOf(dFormat.format(totalprice9d / 200)));
-		
 		// is present Price higher Than or equal to 52 week high
 		data.setHigh52(dataList.getStock().getDayHigh().doubleValue() >= dataList.getStock().getHigh52());
 
 		// is present Price lower Than or equal to 52 week low
 		data.setLow52(dataList.getStock().getDayLow().doubleValue() <= dataList.getStock().getLow52());
-
-		analyseMovingAverage(dataList, data, 7);
 		
 		data.setSendMail(data.isVolumeHighest() || data.isVolumeLowest() || data.isVolumeHigherThanAvg()
 				|| data.isPChangeCrossed() || data.isHigh52() || data.isLow52());
@@ -247,15 +269,11 @@ public class StockDataAnalyserServiceNSEOldImpl implements IStockDataAnalyserSer
 	}
 
 	private void analyseMovingAverage(StockHistoricalDataList dataList, StockAnalysisData data, int range) {
-		Double ma200 = data.getMa200d(), ma50 = data.getMa50d(), temp200ma, temp50ma;
+		Double ma200 = data.getMa200d(), ma50 = data.getMa50d();
 		int listSize = dataList.getDataNseOlds().size();
-		int dayMinusRange =  listSize - range;
 		int i = 0;
+		// has 50 dma crossed the 200 dma today in +ve direction
 		
-		
-		for (i = dayMinusRange; i < listSize-1; i++) {
-			
-		}
 		
 	}
 
