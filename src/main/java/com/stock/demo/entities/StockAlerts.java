@@ -44,7 +44,7 @@ public class StockAlerts {
 
 	private BigDecimal alertDiff;
 
-	private boolean isAlertEnabled;
+	private boolean isAlertEnabled = true;
 
 	private boolean isMailSend;
 
@@ -55,15 +55,15 @@ public class StockAlerts {
 	@UpdateTimestamp
 	private Date updatedDate;
 	
-	private boolean highThan52;
+	private boolean highThan52 = true;
 	
-	private boolean highVolume;
+	private boolean highVolume = true;
 	
-	private boolean higherAvgVolume;
+	private boolean higherAvgVolume = true;
 	
 	private Double pChangeTrigger;
 	
-	private boolean pChangeCrossed;
+	private boolean pChangeCrossed = true;
 
 	@Transient
 	private String mailType;

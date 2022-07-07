@@ -117,7 +117,9 @@
 <script type="text/javascript">
 
 	$(document).ready(function(){
-		
+
+		$("#stock\\.symbol").focus()
+
 		$("#StockAlerts").validate({
 			rules : {
 				"stock\\.symbol" : "required",

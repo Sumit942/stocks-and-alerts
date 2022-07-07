@@ -1,5 +1,6 @@
 package com.stock.demo.controller;
 
+import com.stock.demo.utilities.StockConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ public class MailController {
 		StockAlerts findById = null;
 		if (alertId != null && alertId > 0) {
 			findById = alertService.findById(alertId);
+			findById.setMailType(StockConstants.ALERT_MAIL);
 		}
 
 		if (!mailService.sendHtmlEmails(findById)) {

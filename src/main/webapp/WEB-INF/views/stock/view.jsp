@@ -25,7 +25,7 @@
 <!-- 				<th>Company Name</th> -->
 <!-- 				<th>Series</th> -->
 				<th>Alert Price</th>
-<!-- 				<th>Target Price</th> -->
+ 				<th>Target Price</th>
 				<th>Alert Diff(%)</th>
 				<th>Live Price</th>
 				<th>52 Week</th>
@@ -53,20 +53,21 @@
 <%-- 						<td>${alerts.stock.companyName}</td> --%>
 <%-- 						<td>${stock.series}</td> --%>
 						<td>${alerts.alertPrice}</td>
+						<td>${alerts.targetPrice}</td>
 						<td>
 							<c:if test="${alerts.alertDiff != null}">${alerts.alertDiff} %</c:if> 
 						</td>
 						<td><a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" 
 									title="<div class='lastPriceCol'>
-										   <b>O:</b> ${alerts.stock.open}<br>
+										   <b>Current:</b> ${alerts.stock.open}<br>
 										   </div>">
 								${alerts.stock.lastPrice}
 							</a><br>
 							<b>H:</b> ${alerts.stock.dayHigh} <b>|</b> <b>L:</b> ${alerts.stock.dayLow}
 						</td>
 						<td><b>H</b>: ${alerts.stock.high52} <br> <b>L</b>: ${alerts.stock.low52} </td>
-						<td>${alerts.createdDate}</td>
-						<td>${alerts.updatedDate}</td>
+						<td><fmt:formatDate type="both" timeStyle="short" value="${alerts.createdDate}" /></td>
+						<td><fmt:formatDate type="both" timeStyle="short" value="${alerts.updatedDate}" /></td>
 						<td><a
 							href="${pageContext.request.contextPath}/saved/update?id=${alerts.id}"
 							class="btn btn-success btn-sm">Update</a> <a
@@ -79,6 +80,12 @@
 	</table>
 </div>
 <script type="text/javascript">
+$(document).on("keypress",function(e){
+    if (e.which == 47 ) {
+        window.location.href = "${pageContext.request.contextPath}/saved/add"
+    }
+})
+
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 return new bootstrap.Tooltip(tooltipTriggerEl)

@@ -45,8 +45,8 @@ public class MailServiceImpl implements MailService {
 		if (alerts == null) {
 			return;
 		}
-		Thread mailThread = null;
 		if (StockConstants.ALERT_MAIL.equals(mailType)) {
+			Thread mailThread = null;
 			for (StockAlerts alert : alerts) {
 
 				if (alert.getAlertDiff().compareTo(StockConstants.RANGE_LOWER) >= 0
@@ -79,17 +79,18 @@ public class MailServiceImpl implements MailService {
 				if (StockConstants.ALERT_MAIL.equals(alert.getMailType())) {
 					alert.setMailSend(true);
 				} else if (StockConstants.ANALYSIS_MAIL.equals(alert.getMailType())) {
+					// changing the triggers to false
 					if (alert.getAnalysisData().isVolumeHighest())
-						alert.setHighVolume(alert.isHighVolume() ? false : alert.isHighVolume());
+						alert.setHighVolume(alert.isHighVolume()^alert.isHighVolume());
 					
 					if (alert.getAnalysisData().isHigh52())
-						alert.setHighThan52(alert.isHighThan52() ? false : alert.isHighThan52());
+						alert.setHighThan52(alert.isHighThan52()^alert.isHighThan52());
 					
 					if (alert.getAnalysisData().isVolumeHigherThanAvg())
-						alert.setHigherAvgVolume(alert.isHigherAvgVolume() ? false : alert.isHigherAvgVolume());
+						alert.setHigherAvgVolume(alert.isHigherAvgVolume()^alert.isHigherAvgVolume());
 					
 					if (alert.getAnalysisData().isPChangeCrossed())
-						alert.setPChangeCrossed(alert.isPChangeCrossed() ? false : alert.isPChangeCrossed());
+						alert.setPChangeCrossed(alert.isPChangeCrossed()^alert.isPChangeCrossed());
 				}
 				alertService.save(alert);
 
