@@ -99,7 +99,7 @@ public class StockInfoConverter {
 			dataNseOld.setLastTradedPrice(Double.parseDouble(row.get("lastTradedPrice").replaceAll(",", "")));
 			dataNseOld.setClosePrice(Double.parseDouble(row.get("closePrice").replaceAll(",", "")));
 			dataNseOld.setTotalTradedQty(Long.parseLong(row.get("totalTradedQty").replaceAll(",", "")));
-			dataNseOld.setTurOverInLakh(BigDecimal.valueOf(Double.parseDouble(row.get("lastTradedPrice").replaceAll(",", ""))));
+//			dataNseOld.setTurOverInLakh(BigDecimal.valueOf(Double.parseDouble(row.get("turnover").replaceAll(",", ""))));
 			dataNseOlds.add(dataNseOld);
 		}
 		
