@@ -171,7 +171,7 @@ public class StockDataAnalyserServiceNSEOldImpl implements IStockDataAnalyserSer
 		StockAnalysisData data = new StockAnalysisData();
 		data.setFromDate(dataList.getDataNseOlds().get(listSize -1).getDate());
 		data.setToDate(dataList.getDataNseOlds().get(0).getDate());
-		
+
 		Long lastTradedQty = dataList.getDataNseOlds().get(0).getTotalTradedQty();
 		Long highestTradedQty = 0L;
 		Long lowestTradedQty = lastTradedQty;
@@ -193,6 +193,7 @@ public class StockDataAnalyserServiceNSEOldImpl implements IStockDataAnalyserSer
 
 			totalTradedQty += tempQty;
 			//below total price are taken from yesterday till ma from date
+			//TODO: optimize if the stock is new i.e., 200 day data not available
 			totalprice9dYesterday  += (listSize - i) <= 10 ? dataNseOld.getClosePrice() : 0.0;
 			
 			totalprice21dYesterday += (listSize - i) <= 22 ? dataNseOld.getClosePrice() : 0.0;
@@ -204,39 +205,41 @@ public class StockDataAnalyserServiceNSEOldImpl implements IStockDataAnalyserSer
 		
 		//totalprice are for today are taken by subtracting the from date close price and adding today last price(listSize-1)
 		Double lastprice = + dataList.getDataNseOlds().get(listSize-1).getClosePrice();;
-		totalprice9dToday = -dataList.getDataNseOlds().get(listSize - 10).getClosePrice() + totalprice9dYesterday + lastprice;
-		totalprice21dToday = -dataList.getDataNseOlds().get(listSize - 22).getClosePrice() +totalprice21dYesterday - + lastprice;
-		totalprice50dToday = -dataList.getDataNseOlds().get(listSize - 51).getClosePrice() + totalprice50dYesterday - + lastprice;
-		totalprice200dToday = -dataList.getDataNseOlds().get(listSize - 201).getClosePrice() + totalprice200dYesterday - + lastprice;
-		
+
 		//rounding upto 2 decimal places
 		DecimalFormat dFormat = new DecimalFormat("#.##");
 		dFormat.setRoundingMode(RoundingMode.CEILING);
 
-		//9 day moving average yesterday
-		data.setMa9d_yestr(Double.valueOf(dFormat.format(totalprice9dYesterday / 9)));
-		
-		//9 day moving average today
-		data.setMa9d(Double.valueOf(dFormat.format(totalprice9dToday / 9)));
-		
-		//21 day moving average yesterday
-		data.setMa21d_yestr(Double.valueOf(dFormat.format(totalprice9dYesterday / 21)));
-		//21 day moving average today
-		data.setMa21d(Double.valueOf(dFormat.format(totalprice9dToday / 21)));
-		
-		//50 day moving average yesterday
-		data.setMa50d_yestr(Double.valueOf(dFormat.format(totalprice9dYesterday / 50)));
-		//50 day moving average today
-		data.setMa50d(Double.valueOf(dFormat.format(totalprice9dToday / 50)));		
-		
-		//200 day moving average yesterday
-		data.setMa200d_yestr(Double.valueOf(dFormat.format(totalprice9dYesterday / 200)));
-		//200 day moving average today
-		data.setMa200d(Double.valueOf(dFormat.format(totalprice9dToday / 200)));
-
+		if (listSize >= 10) {
+			totalprice9dToday = -dataList.getDataNseOlds().get(listSize - 10).getClosePrice() + totalprice9dYesterday + lastprice;
+			//9 day moving average yesterday
+			data.setMa9d_yestr(Double.valueOf(dFormat.format(totalprice9dYesterday / 9)));
+			//9 day moving average today
+			data.setMa9d(Double.valueOf(dFormat.format(totalprice9dToday / 9)));
+		}
+		if (listSize >= 22) {
+			totalprice21dToday = -dataList.getDataNseOlds().get(listSize - 22).getClosePrice() + totalprice21dYesterday - +lastprice;
+			//21 day moving average yesterday
+			data.setMa21d_yestr(Double.valueOf(dFormat.format(totalprice21dYesterday / 21)));
+			//21 day moving average today
+			data.setMa21d(Double.valueOf(dFormat.format(totalprice21dToday / 21)));
+		}
+		if (listSize >= 51) {
+			totalprice50dToday = -dataList.getDataNseOlds().get(listSize - 51).getClosePrice() + totalprice50dYesterday - +lastprice;
+			//50 day moving average yesterday
+			data.setMa50d_yestr(Double.valueOf(dFormat.format(totalprice50dYesterday / 50)));
+			//50 day moving average today
+			data.setMa50d(Double.valueOf(dFormat.format(totalprice50dToday / 50)));
+		}
+		if (listSize >= 201) {
+			totalprice200dToday = -dataList.getDataNseOlds().get(listSize - 201).getClosePrice() + totalprice200dYesterday - +lastprice;
+			//200 day moving average yesterday
+			data.setMa200d_yestr(Double.valueOf(dFormat.format(totalprice200dYesterday / 200)));
+			//200 day moving average today
+			data.setMa200d(Double.valueOf(dFormat.format(totalprice200dToday / 200)));
+		}
 		analyseMovingAverage(dataList, data, 1);
-		
-		
+
 		// higest qty
 		data.setHighestTradedQty(highestTradedQty);
 		data.setVolumeHighest(lastTradedQty >= highestTradedQty);
