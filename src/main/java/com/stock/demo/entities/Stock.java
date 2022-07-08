@@ -9,7 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
@@ -61,22 +63,14 @@ public class Stock {
 	
 	@Min(value = 0)
 	private Double open;
-	
-	@Min(value = 0)
-	private Double ma200;
-	
-	@Min(value = 0)
-	private Double ma50;
 
-	@Min(value = 0)
-	private Double ma21;
-	
-	@Min(value = 0)
-	private Double ma9;
-	
 	@OneToMany(mappedBy = "stock")
 	private List<StockAlerts> alerts;
 
+	@OneToOne
+	@JoinColumn(name = "movingAverage_id", referencedColumnName = "id")
+	private MovingAverage movingAverage;
+	
 	@Override
 	public String toString() {
 		return "Stock [id=" + id + ", symbol=" + symbol + ", companyName=" + companyName + ", series=" + series

@@ -1,4 +1,4 @@
-package com.stock.demo;
+package com.stock.demo.utilities.indicators;
 
 public class Indicators {
 

@@ -36,9 +36,8 @@ public class StockAnalysisData {
 	private Double ma9d, ma21d, ma50d, ma200d;
 	private Double ma9d_yestr, ma21d_yestr, ma50d_yestr, ma200d_yestr;
 	
-//	private boolean is9dAbove, is21dAbove, is50dAbove, is200dAbove;
-	private boolean above200ma, below200ma, ma50Crossed200Upward, ma50Crossed200Downward;
-
+	private boolean _50crossed200fromBelowInupward, _50crossed200fromAboveInDownward;
+	
 	@Override
 	public String toString() {
 		return "";

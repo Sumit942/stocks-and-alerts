@@ -30,7 +30,7 @@ import com.stock.demo.utilities.converter.StockInfoConverter;
 
 @Component
 public class StockUpdateSchedular {
-	
+
 	@Autowired
 	LiveStockService liveStockService;
 
@@ -48,7 +48,7 @@ public class StockUpdateSchedular {
 	IStockDataAnalyserService analyserService;
 
 	private static String fromDate = null, toDate = null;
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(StockUpdateSchedular.class);
 
 	@PostConstruct
@@ -57,7 +57,7 @@ public class StockUpdateSchedular {
 		toDate = LocalDate.now().minusDays(1).format(formatter);
 		fromDate = StockInfoConverter.getMovingAverageFromDate(201).format(formatter);
 	}
-	
+
 	@Scheduled(cron = "0 * 9-15 * * MON-FRI")
 	public void updateStockInfo() {
 
@@ -70,7 +70,7 @@ public class StockUpdateSchedular {
 		});
 	}
 
-//	@Scheduled(cron = "0 * * * * *")
+	@Scheduled(cron = "0 0/10 9-16 * * MON-FRI")
 	public void analyseStockFromNseNewUrl() {
 
 		LOG.info("\n\t\t\t\t\t\t\t\t<<<------Stock Analysis-------->>>");
@@ -82,10 +82,10 @@ public class StockUpdateSchedular {
 		});
 	}
 
-	@Scheduled(cron = "0 0/10 9-16 * * MON-FRI")
+//	@Scheduled(cron = "0 0/10 9-16 * * MON-FRI")
 	public void analyseStockFromNseOldUrl() {
 
-		LOG.info("\n\t\t\t\t\t<<<------Stock Analysis (nse old)-------->>>"+fromDate+" - "+toDate);
+		LOG.info("\n\t\t\t\t\t<<<------Stock Analysis (nse old)-------->>>" + fromDate + " - " + toDate);
 		List<Stock> savedStocks = stockService.findAll();
 		savedStocks.forEach((stock) -> {
 
@@ -94,41 +94,43 @@ public class StockUpdateSchedular {
 		});
 
 	}
-	
+
 	private class AnalyserThreadOldNse implements Runnable {
 
 		private Stock stock;
+
 		public AnalyserThreadOldNse(Stock stock) {
 			this.stock = stock;
 		}
-		
+
 		@Override
 		public void run() {
 			if (stock == null || stock.getSymbol() == null) {
 				return;
 			}
-			
-			//getting historical data for the stock
-			List<StockHistoricalDataNseOld> historicalDatalist = liveStockService.getStockHistoricalDataFromOldNSE(stock.getSymbol(), stock.getSeries(), fromDate, toDate);
-			
+
+			// getting historical data for the stock
+			List<StockHistoricalDataNseOld> historicalDatalist = liveStockService
+					.getStockHistoricalDataFromOldNSE(stock.getSymbol(), stock.getSeries(), fromDate, toDate);
+
 			if (historicalDatalist == null || historicalDatalist.isEmpty()) {
-				LOG.info("No Data Historical Data Found for Stock "+stock.getSymbol());
+				LOG.info("No Data Historical Data Found for Stock " + stock.getSymbol());
 				return;
 			}
 			StockHistoricalDataList dataList = new StockHistoricalDataList();
 			dataList.setDataNseOlds(historicalDatalist);
 			dataList.setStock(stock);
-			
-			//analysing the data
+
+			// analysing the data
 			StockAnalysisData analysisData = analyserService.analyseStockOldNse(dataList);
 			analysisData.setStockId(stock.getId());
 
-			//sending mail if analyses is passed
+			// sending mail if analyses is passed
 			if (analysisData.isSendMail()) {
 				mailService.sendAlertMails(analysisData);
 			}
 		}
-		
+
 	}
 
 	private class StockAlertThread implements Runnable {
@@ -172,11 +174,11 @@ public class StockUpdateSchedular {
 		 * @return true if stock info is changed
 		 */
 		private boolean willSendMail(Stock stock2, StockInfo liveInfo) {
-			
+
 			if (liveInfo == null) {
 				return false;
 			}
-			
+
 			boolean flag = false;
 
 			if (stock2.getOpen() == null || stock2.getOpen().compareTo(liveInfo.getOpen()) != 0) {
@@ -186,22 +188,28 @@ public class StockUpdateSchedular {
 			if (stock2.getLastPrice() == null || stock2.getLastPrice().compareTo(liveInfo.getLastPrice()) != 0) {
 				flag = true;
 				stock2.setLastPrice(liveInfo.getLastPrice());
-			} if (stock2.getHigh52() == null || stock2.getHigh52().compareTo(liveInfo.getHigh52()) != 0) {
+			}
+			if (stock2.getHigh52() == null || stock2.getHigh52().compareTo(liveInfo.getHigh52()) != 0) {
 				flag = true;
 				stock2.setHigh52(liveInfo.getHigh52());
-			} if (stock2.getLow52() == null || stock2.getLow52().compareTo(liveInfo.getLow52()) != 0) {
+			}
+			if (stock2.getLow52() == null || stock2.getLow52().compareTo(liveInfo.getLow52()) != 0) {
 				flag = true;
 				stock2.setLow52(liveInfo.getLow52());
-			} if (stock2.getDayHigh() == null || stock2.getDayHigh().compareTo(liveInfo.getDayHigh()) != 0) {
+			}
+			if (stock2.getDayHigh() == null || stock2.getDayHigh().compareTo(liveInfo.getDayHigh()) != 0) {
 				flag = true;
 				stock2.setDayHigh(liveInfo.getDayHigh());
-			} if (stock2.getDayLow() == null || stock2.getDayLow().compareTo(liveInfo.getDayLow()) != 0) {
+			}
+			if (stock2.getDayLow() == null || stock2.getDayLow().compareTo(liveInfo.getDayLow()) != 0) {
 				flag = true;
 				stock2.setDayLow(liveInfo.getDayLow());
-			} if (stock2.getPChange() == null || stock2.getPChange().compareTo(liveInfo.getPChange()) != 0) {
+			}
+			if (stock2.getPChange() == null || stock2.getPChange().compareTo(liveInfo.getPChange()) != 0) {
 				flag = true;
 				stock2.setPChange(liveInfo.getPChange());
-			}if (stock2.getSeries() == null) {
+			}
+			if (stock2.getSeries() == null) {
 				flag = true;
 				stock2.setSeries(liveInfo.getSeries());
 			}
