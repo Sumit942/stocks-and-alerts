@@ -5,6 +5,10 @@ import java.util.List;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import com.stock.demo.entities.Mail;
+import com.stock.demo.exception.MailNotFoundException;
+import com.stock.demo.repo.MailRepository;
+import com.stock.demo.utilities.enums.MailStatusType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,9 @@ public class MailServiceImpl implements MailService {
 	@Autowired
 	StockAlertService alertService;
 
+	@Autowired
+	MailRepository mailRepository;
+
 	@Override
 	public void sendSimpleMail(String to, String message) {
 		LOG.info("Mail Send to - " + to + " - " + message);
@@ -52,8 +59,9 @@ public class MailServiceImpl implements MailService {
 				if (alert.getAlertDiff().compareTo(StockConstants.RANGE_LOWER) >= 0
 						&& alert.getAlertDiff().compareTo(StockConstants.RANGE_UPPER) <= 0 && !alert.isMailSend()) {
 					alert.setMailType(StockConstants.ALERT_MAIL);
-					mailThread = new Thread(new MailSendingThread(alert));
-					mailThread.start();
+//					mailThread = new Thread(new MailSendingThread(alert));
+//					mailThread.start();
+					addMail(alert);
 				}
 			}
 		}
@@ -121,7 +129,7 @@ public class MailServiceImpl implements MailService {
 			javaMailSender.send(mimeMessage);
 			isMailSend = true;
 		} catch (MessagingException e) {
-			LOG.error("Error while sending mailto:" + alert.getUser().getEmailId() + " -: " + e);
+			LOG.error("Error while sending mailto:" + alert.getUser().getEmailId() + " -: " + e,e);
 			isMailSend = false;
 		}
 		return isMailSend;
@@ -133,7 +141,7 @@ public class MailServiceImpl implements MailService {
 		List<StockAlerts> list = alertService.findByStockId_High52OrHighVolumeOrHigherAvgVolumeOrPChangeCrossed(stockId,
 				true, true, true, true);
 
-		Thread mailThread = null;
+//		Thread mailThread = null;
 		for (StockAlerts analysis : list) {
 
 			if (!isAnalysisMailToBeSend(analysis, analysisData)) {
@@ -143,8 +151,9 @@ public class MailServiceImpl implements MailService {
 			analysis.setMailType(StockConstants.ANALYSIS_MAIL);
 			analysis.setAnalysisData(analysisData);
 
-			mailThread = new Thread(new MailSendingThread(analysis));
-			mailThread.start();
+//			mailThread = new Thread(new MailSendingThread(analysis));
+//			mailThread.start();
+			addMail(analysis);
 		}
 	}
 
@@ -173,6 +182,44 @@ public class MailServiceImpl implements MailService {
 
 		return highVolume || highAvgVolume || high52 || pChange;
 
+	}
+
+	@Override
+	public void addMail(StockAlerts alert) {
+		String logPrefix = "addMail() | ";
+		if (alert.getUser().getEmailId() == null || alert.getUser().getEmailId().isEmpty()) {
+			throw new MailNotFoundException("Error: Email Id not found for " + alert.getUser());
+		}
+
+		Context context = new Context();
+		context.setVariable("alert", alert);
+
+		try {
+			String body = templateEngine.process(StockMailUtility.getTemplate(alert), context);
+			String subject = StockMailUtility.getSubject(alert);
+			String to = alert.getUser().getEmailId();
+
+			Mail mail = new Mail();
+			mail.setStatus(MailStatusType.NEW);
+			mail.setEmailId(to);
+			mail.setSubject(subject);
+			mail.setBody(body);
+
+			sentMail(mail);
+		} catch (Exception e) {
+			LOG.error(logPrefix + "Error while sending mailto:" + alert.getUser().getEmailId() + " -: " + e);
+		}
+
+	}
+
+	/**
+	 * This will add mail to the mail sending Thread and update the current status of mail in DB as well.
+	 * @param mail
+	 */
+	@Override
+	public void sentMail(Mail mail) {
+		mailRepository.save(mail);
+		//TODO: write code 1. mailThread, 2. updateMail DB
 	}
 
 }

@@ -88,7 +88,6 @@ public class StockUpdateSchedular {
 		LOG.info("\n\t\t\t\t\t<<<------Stock Analysis (nse old)-------->>>" + fromDate + " - " + toDate);
 		List<Stock> savedStocks = stockService.findAll();
 		savedStocks.forEach((stock) -> {
-
 			Thread analyserThread = new Thread(new AnalyserThreadOldNse(stock));
 			analyserThread.start();
 		});

@@ -4,7 +4,7 @@ package com.stock.demo.exception;
 public class MailTemplateNotFoundException extends RuntimeException {
 
 	public MailTemplateNotFoundException(String message) {
-		super("Mail Template not found with template - "+message);
+		super("Mail Template not found with template - ["+message+"]");
 	}
 
 	
