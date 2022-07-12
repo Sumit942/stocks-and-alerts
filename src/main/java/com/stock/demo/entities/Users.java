@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.stock.demo.utilities.converter.UserConverter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -41,6 +42,11 @@ public class Users {
 	
 	@OneToMany(mappedBy = "user")
 	private List<StockAlerts> alerts;
+
+	public String getFullName() {
+		String fullName = firstName +" "+ lastName;
+		return UserConverter.getFullNameFormatted(fullName);
+	}
 
 	@Override
 	public String toString() {

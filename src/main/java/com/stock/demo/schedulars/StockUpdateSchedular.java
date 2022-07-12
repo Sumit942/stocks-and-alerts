@@ -70,7 +70,7 @@ public class StockUpdateSchedular {
 		});
 	}
 
-	@Scheduled(cron = "0 0/10 9-16 * * MON-FRI")
+//	@Scheduled(cron = "0 0/10 9-16 * * MON-FRI")
 	public void analyseStockFromNseNewUrl() {
 
 		LOG.info("\n\t\t\t\t\t\t\t\t<<<------Stock Analysis-------->>>");
@@ -82,7 +82,7 @@ public class StockUpdateSchedular {
 		});
 	}
 
-//	@Scheduled(cron = "0 0/10 9-16 * * MON-FRI")
+	@Scheduled(cron = "0 0/10 9-16 * * MON-FRI")
 	public void analyseStockFromNseOldUrl() {
 
 		LOG.info("\n\t\t\t\t\t<<<------Stock Analysis (nse old)-------->>>" + fromDate + " - " + toDate);
