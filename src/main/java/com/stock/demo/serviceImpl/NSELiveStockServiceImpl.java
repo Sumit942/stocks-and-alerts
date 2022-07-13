@@ -227,7 +227,7 @@ public class NSELiveStockServiceImpl implements LiveStockService {
 
 			return StockInfoConverter.getEntityFromMapList(list);
 		} catch (Exception e) {
-			log.error("Error getting historical ["+symbol+"] data from old nseWebsit: " + e.getLocalizedMessage(),e);
+			log.error("Error getting historical [symbol="+symbol+";series="+series+"] data from old nseWebsit: " + e.getLocalizedMessage(),e);
 			return null;
 		}
 	}
