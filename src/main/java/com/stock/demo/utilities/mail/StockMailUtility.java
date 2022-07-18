@@ -31,6 +31,9 @@ public class StockMailUtility {
 			if (stock.isHighThan52() && stock.getAnalysisData().isHigh52()) {
 				sb.append("| 52WeekHigh |");
 			}
+			if (stock.isLowThan52() && stock.getAnalysisData().isLow52()) {
+				sb.append("| 52WeekLow |");
+			}
 			if (stock.isHighVolume() && stock.getAnalysisData().isVolumeHighest()) {
 				sb.append("| High Volume |");
 			}

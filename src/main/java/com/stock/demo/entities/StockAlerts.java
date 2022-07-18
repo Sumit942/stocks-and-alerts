@@ -56,6 +56,8 @@ public class StockAlerts {
 	private Date updatedDate;
 	
 	private boolean highThan52 = true;
+
+	private boolean lowThan52 = true;
 	
 	private boolean highVolume = true;
 	
