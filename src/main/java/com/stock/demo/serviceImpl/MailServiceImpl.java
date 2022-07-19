@@ -218,6 +218,7 @@ public class MailServiceImpl implements MailService {
 	 */
 	@Override
 	public void sentMail(Mail mail) {
+		LOG.info("saving mail to DB");
 		mailRepository.save(mail);
 		//TODO: write code 1. mailThread, 2. updateMail DB
 	}
