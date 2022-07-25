@@ -55,11 +55,11 @@
 						<td>${alerts.alertPrice}</td>
 						<td>${alerts.targetPrice}</td>
 						<td>
-							<c:if test="${alerts.alertDiff != null}">${alerts.alertDiff} %</c:if> 
+							<c:if test="${alerts.alertDiff != null}">${alerts.alertDiff} %</c:if>
 						</td>
 						<td><a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" 
 									title="<div class='lastPriceCol'>
-										   <b>Current:</b> ${alerts.stock.open}<br>
+										   <b>O:</b> ${alerts.stock.open}<br>
 										   </div>">
 								${alerts.stock.lastPrice}
 							</a><br>
